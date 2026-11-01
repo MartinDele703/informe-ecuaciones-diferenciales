@@ -2,7 +2,143 @@
 \label{sec:metodologia}
 % Herramientas (Python, NumPy, Matplotlib, con versiones), diseño de cada experimento, criterios
 % de análisis (error absoluto, error final, error máximo, número de pasos), elección de h donde la
-% consigna no lo fija (Actividad 6 y hk > 1), por qué escala logarítmica, cómo se calculan los
+% consigna no lo fija (modelo con lambda y hk > 1), por qué escala logarítmica, cómo se calculan los
 % tiempos (t0 + n h), uso de Claude, y el link al repositorio (SOLO acá).
 
-[PENDIENTE]
+\subsection{Entorno y herramientas}
+\label{subsec:entorno}
+
+Todo el trabajo numérico se hizo en Python 3.12.3 (Python Software Foundation, 2024) sobre
+Windows 11, con NumPy 1.26.4 (Harris et al., 2020) para los arreglos y Matplotlib 3.11.1
+(Hunter, 2007) para las figuras. Esas dos bibliotecas son las únicas dependencias externas y
+están declaradas en \texttt{requirements.txt} con sus versiones mínimas. Los valores de $t$, $x$
+y $h$ son números de punto flotante de doble precisión, el tipo \texttt{float} de Python. El
+informe se escribió en \LaTeX{} y se compiló con Tectonic.
+
+Los dos métodos se implementaron a mano. Ninguna parte del trabajo usa \texttt{scipy},
+\texttt{solve\_ivp} ni otra rutina de integración de biblioteca: el objeto de estudio es la
+recurrencia misma, y una rutina externa elige el paso y el esquema por su cuenta. NumPy
+interviene solo para guardar las sucesiones en arreglos y evaluar la solución de referencia
+sobre ellos.
+
+\subsection{Organización del código y reproducción de los resultados}
+\label{subsec:codigo}
+
+El código está en el directorio \texttt{src/}. El módulo \texttt{metodos.py} contiene las
+funciones \texttt{euler(f, x0, t0, tf, h)} y \texttt{euler\_mejorado(f, x0, t0, tf, h)}, con las
+firmas que fija la consigna. Las dos reciben la función $f(t, x)$ de la ecuación $x' = f(t, x)$,
+la condición inicial $x_0$, los extremos $t_0$ y $t_f$ del intervalo y el tamaño del paso $h$, y
+devuelven los tiempos $t_n$, los valores aproximados $x_n$ y el número de pasos realizados. Cada
+una acumula paso a paso con un ciclo \texttt{for}: la primera con la recurrencia de Euler y la
+segunda con la predicción y la corrección descritas en la sección \ref{sec:marco-teorico}. El
+mismo módulo tiene la función \texttt{error\_absoluto}, que compara una sucesión con la solución
+de referencia evaluada en los mismos instantes.
+
+Dos detalles de implementación afectan la comparación con la referencia. El número de pasos es
+$N = \mathrm{round}((t_f - t_0)/h)$, redondeado y no truncado, porque en punto flotante un
+cociente como $10/0.1$ no da exactamente $100$. Los tiempos se calculan como $t_n = t_0 + n h$ en
+lugar de acumular $t \leftarrow t + h$: sumar $h$ cientos de veces arrastra un error de redondeo
+en $t$, y la referencia $x(t_n)$ se evaluaría en un instante que no es el del paso.
+
+El resto del código se reparte en tres módulos de experimento, un módulo de utilidades
+compartidas y un punto de entrada. Los de experimento son
+\texttt{experimento1\_\allowbreak verificacion.py},
+\texttt{experimento2\_\allowbreak error\_\allowbreak metodos.py} y
+\texttt{experimento3\_\allowbreak vulnerabilidades.py}; el de utilidades, \texttt{comun.py},
+fija el estilo de las figuras y escribe los archivos de salida; el punto de entrada es
+\texttt{main.py}. El comando \texttt{python src/main.py} corre los tres
+experimentos y regenera desde cero todas las figuras y tablas del informe; pasarle un número
+corre un solo experimento. Cada figura se guarda como PDF vectorial en \texttt{informe/figuras/}
+y cada tabla como cuerpo de un entorno \texttt{tabular} en \texttt{informe/tablas/}, que el
+documento incluye con \texttt{\textbackslash input}. El informe no contiene ningún número que el
+código no haya escrito en uno de esos archivos. La consola imprime un resumen corto por
+experimento, que sirve para comprobar que la corrida terminó; nada de ahí se copia al texto. El
+trabajo no tiene componentes aleatorios, así que no hay semilla: dos corridas producen archivos
+idénticos.
+
+El repositorio con el código, las figuras, las tablas y las fuentes \LaTeX{} de este informe está
+disponible en \url{https://github.com/MartinDele703/informe-ecuaciones-diferenciales}.
+
+\subsection{Diseño de los experimentos}
+\label{subsec:diseno}
+
+El primer experimento verifica el método de Euler sobre dos ecuaciones cuya solución de
+referencia da la consigna. En el caso de crecimiento lineal, $x' = 1$ con $x(0) = 0$ y referencia
+$x(t) = t$, se corre Euler con $h \in \{1,\, 0.5,\, 0.1\}$. En el caso de decrecimiento
+exponencial, $x' = -x$ con $x(0) = 1$ y referencia $x(t) = e^{-t}$, se corre con
+$h \in \{1,\, 0.5,\, 0.1,\, 0.01\}$. Los dos casos cubren $0 \le t \le 10$ y producen una figura
+cada uno con la referencia y todas las aproximaciones superpuestas.
+
+El segundo experimento mide el error sobre $x' = -x$, $x(0) = 1$, $0 \le t \le 10$. Primero se
+corre Euler con $h \in \{1,\, 0.5,\, 0.1,\, 0.05,\, 0.01\}$ y se registran el error absoluto
+$E_n$ en cada instante, el error final, el error máximo y el número de pasos de cada corrida.
+Después se corren Euler y Euler mejorado con $h \in \{1,\, 0.5,\, 0.1\}$ y se comparan el valor
+final, el error final y el número de pasos de cada método. Con los errores finales de los dos
+métodos se construye una figura de error final contra $h$ que permite leer el orden de cada uno.
+
+El tercer experimento aplica Euler al modelo de remediación $V' = -kV$, $V(0) = V_0$, con
+referencia $V(t) = V_0 e^{-kt}$, en tres partes. La primera simula las organizaciones A, B y C
+($k = 0.1$, $0.3$ y $0.7$, todas con $V_0 = 1000$) sobre $0 \le t \le 20$ con
+$h \in \{1,\, 0.5,\, 0.1\}$, grafica $V(t)$ junto a la referencia y tabula la cantidad aproximada
+de equipos vulnerables en $t = 5$, $10$ y $15$, el valor de referencia y el error absoluto, para
+cada organización y cada $h$. La segunda estudia la estabilidad del modelo discreto
+$V_{n+1} = (1 - hk)\,V_n$ con $hk > 1$; sus parámetros se eligen en la sección
+\ref{subsec:parametros}. La tercera incorpora la aparición de nuevas vulnerabilidades,
+$V' = \lambda - kV$, con $V_0 = 1000$, $k = 0.3$ y $\lambda \in \{0,\, 50,\, 100,\, 200\}$:
+grafica $V(t)$ para los cuatro valores con el equilibrio $\lambda/k$ marcado y tabula, para cada
+$\lambda$, ese equilibrio y el valor simulado al final del intervalo.
+
+\subsection{Criterios de análisis}
+\label{subsec:criterios}
+
+La medida de precisión es el error absoluto $E_n = |x(t_n) - x_n|$ entre la solución de
+referencia y la aproximación en cada instante de la sucesión. De cada corrida se reportan dos
+resúmenes: el error final $E_N$, en el último instante del intervalo, y el error máximo
+$\max_n E_n$ sobre todo el intervalo. El primero dice con qué precisión llega el método al final;
+el segundo detecta si en el camino se alejó más de lo que el final sugiere. En el modelo con
+$\lambda$ la consigna no da solución de referencia y el trabajo no resuelve ecuaciones
+diferenciales de forma analítica, así que la comparación es contra el valor de equilibrio
+$\lambda/k$ de la sección \ref{sec:marco-teorico}: se mide cuánto se acerca a ese equilibrio el
+valor simulado al final del intervalo.
+
+El costo computacional se mide con el número de pasos $N$ y con el número de evaluaciones de
+$f$: $N$ para Euler y $2N$ para Euler mejorado, que evalúa la pendiente dos veces por paso. No se
+miden tiempos de ejecución. Para ecuaciones tan baratas de evaluar, un cronómetro registra sobre
+todo el ruido del sistema operativo, y sus cifras cambian entre corridas y entre máquinas. El
+trabajo de cada paso es fijo y conocido, así que contar pasos y evaluaciones caracteriza el
+costo sin esa incertidumbre y de forma reproducible.
+
+\subsection{Decisiones que la consigna no fija}
+\label{subsec:parametros}
+
+Para el estudio de $hk > 1$ la consigna deja libre la elección de $h$. Se tomó la organización C
+($k = 0.7$, $V_0 = 1000$) con $h \in \{1,\, 2,\, 3\}$ sobre $0 \le t \le 30$, es decir
+$hk \in \{0.7,\, 1.4,\, 2.1\}$. Cada uno de esos valores cae en un régimen distinto de la
+sucesión geométrica de razón $1 - hk$ descrita en la sección \ref{sec:marco-teorico}:
+decrecimiento monótono con $hk = 0.7$, oscilación con signo alternado y amplitud decreciente con
+$hk = 1.4$, y divergencia con $hk = 2.1$. Se prefirieron pasos enteros para que los instantes
+$t_n$ de las tres corridas coincidan sobre la grilla de $t$ entera, y el intervalo más largo deja
+ver varias oscilaciones antes del final.
+
+Para el modelo con $\lambda$ se usó $h = 0.1$ sobre $0 \le t \le 20$, el mismo intervalo que el
+de las organizaciones. Es el paso más fino de los que se usan en el estudio de las organizaciones
+y el que menor error final muestra en el experimento de error contra tamaño del paso, con lo cual
+las diferencias entre los cuatro valores de $\lambda$ reflejan el modelo y no el método.
+
+La figura de error absoluto contra $t$ usa escala logarítmica en el eje vertical, y la de error
+final contra $h$ usa escala logarítmica en los dos ejes. Los errores abarcan varios órdenes de
+magnitud entre $h = 1$ y $h = 0.01$, y en escala lineal las curvas de los pasos chicos quedarían
+pegadas al cero. En la figura log-log un error proporcional a $h^{p}$ se ve como una recta de
+pendiente $p$, así que el orden de cada método se lee directamente de la figura. Las figuras del
+modelo de remediación quedan en escala lineal, porque ahí interesan la cantidad de equipos y su
+signo.
+
+\subsection{Uso de asistentes de inteligencia artificial}
+\label{subsec:ia}
+
+Durante el desarrollo se usó el asistente Claude Code (Anthropic, 2026) como apoyo para escribir
+el código en Python, redactar el informe y revisar que el texto coincida con los datos que el
+código genera. Los autores definieron el diseño de los experimentos y la elección de los
+parámetros, verificaron los resultados numéricos y son responsables del contenido final. Ningún
+dato del informe proviene del asistente: todos salen de las figuras y tablas que produce el
+código del repositorio.
