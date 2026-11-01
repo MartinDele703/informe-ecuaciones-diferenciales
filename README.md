@@ -11,7 +11,7 @@ remediación de vulnerabilidades en una organización.
 ## Estructura
 
 ```
-material/           consigna, guía de informe, rúbrica e informe de referencia
+material/           consigna y guía de informe académico
 docs/               REQUISITOS.md (lista verificable), RUBRICA_EVALUACION.md, ENTREGA.md, adr/
 src/                código Python: metodos.py, un módulo por experimento, comun.py y main.py
 tools/              verificar_informe.py: chequeos automáticos de la rúbrica

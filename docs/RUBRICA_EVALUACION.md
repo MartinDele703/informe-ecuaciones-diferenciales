@@ -2,13 +2,13 @@
 
 Rúbrica de revisión final, armada desde las cuatro fuentes del trabajo:
 
-- `material/Rúbricas para informes.xlsx`: las tres dimensiones, los tipos de error y la tabla
-  de notas. Es la que usa la cátedra para poner la nota.
+- La rúbrica de la cátedra (no está en el repo): las tres dimensiones, los tipos de error y la
+  tabla de notas. Es la que usa la cátedra para poner la nota.
 - `material/Guia_de_informe_academico.pdf`: la estructura obligatoria y las reglas de figuras y
   tablas.
 - `material/Simulacion_numerica_de_ecuaciones_diferenciales.pdf`: qué hay que hacer.
-- `material/Informe Guia_Integracion_Numerica_JuanaYGabriela-4.pdf`: informe de otra consigna
-  que sacó la nota máxima, usado como criterio de presentación.
+- Un informe de otra consigna que sacó la nota máxima (no está en el repo), usado como criterio
+  de presentación.
 
 `docs/REQUISITOS.md` sigue siendo la lista de QUÉ hay que hacer. Esta rúbrica es CÓMO se
 verifica que esté bien hecho y qué pasa si no lo está. Es la misma que se usó en

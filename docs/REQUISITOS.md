@@ -2,7 +2,7 @@
 
 Destilado de tres fuentes: la consigna
 (`material/Simulacion_numerica_de_ecuaciones_diferenciales.pdf`), la Guía de informe académico
-(`material/Guia_de_informe_academico.pdf`) y la rúbrica (`material/Rúbricas para informes.xlsx`).
+(`material/Guia_de_informe_academico.pdf`) y la rúbrica de la cátedra (no está en el repo).
 Cada línea es verificable. Se usa para revisar antes de entregar.
 
 La consigna numera sus actividades del 1 al 6 y además hace preguntas sueltas en las secciones

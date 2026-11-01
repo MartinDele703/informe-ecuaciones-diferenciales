@@ -22,10 +22,7 @@ código quedan en inglés o español según estén.
    verificable. Es lo que se usa para revisar el trabajo antes de entregar.
 3. `CONTEXT.md`: glosario. Usá esos términos y no sus alias.
 4. `docs/adr/`: decisiones tomadas y por qué. No las reabras sin decirlo.
-5. `material/Informe Guia_Integracion_Numerica_JuanaYGabriela-4.pdf`: informe de otra consigna que
-   sacó la nota máxima. Ante una duda de criterio ("¿cómo se presenta X?"), mirá primero cómo lo
-   resolvieron ahí y recién después preguntá.
-6. `../informe-sumatorias/`: el trabajo anterior del mismo grupo, con la misma estructura y nota
+5. `../informe-sumatorias/`: el trabajo anterior del mismo grupo, con la misma estructura y nota
    final pendiente pero revisado contra la rúbrica. Ante una duda de cómo se hizo algo acá (una
    tabla, un pie de figura, la Metodología, la cita de Claude en APA, la portada), mirar cómo
    quedó ahí. No copiar prosa: la consigna es otra.
