@@ -1,16 +1,333 @@
 \section{Marco teórico}
 \label{sec:marco-teorico}
-% Una subsección por concepto clave, solo los que se usan. Cada uno con su referencia APA.
-% Candidatos (ver docs/REQUISITOS.md §2):
-%   - De la derivada a la ecuación en diferencias: cociente incremental, x(t+h) ≈ x(t) + h f(t,x).
-%   - Método de Euler: la recurrencia, el tamaño del paso, el número de pasos.
-%   - Método de Euler mejorado (Heun): predicción y corrección, dos evaluaciones de f por paso.
-%   - Error absoluto, error final, error máximo; orden de un método (Euler 1, Euler mejorado 2).
-%   - Modelo de remediación V' = -kV y su solución de referencia (dada por la consigna).
-%   - Modelo discreto V_{n+1} = (1-hk) V_n: sucesión geométrica, expresión explícita, límite,
-%     estabilidad según hk (única deducción analítica del trabajo).
-%   - Modelo con aparición de nuevas vulnerabilidades V' = λ - kV y su equilibrio λ/k.
-%   - Gestión de vulnerabilidades: vulnerabilidad, parche, remediación, CVE, CVSS, priorización,
-%     MITRE ATT&CK y la técnica T1190. Con al menos una fuente técnica reconocida.
+% Una subsección por concepto clave, solo los que se usan. Cada afirmación fuerte con referencia.
+% Las etiquetas de ecuación se usan desde Resultados y Discusión: eq:cociente-incremental,
+% eq:aproximacion-tangente, eq:euler, eq:tiempos, eq:heun, eq:error-absoluto, eq:orden,
+% eq:modelo-remediacion, eq:solucion-referencia, eq:modelo-discreto, eq:modelo-discreto-explicito,
+% eq:referencia-discreta, eq:estabilidad, eq:modelo-lambda, eq:equilibrio, eq:desvio-equilibrio.
 
-[PENDIENTE]
+\subsection{De la derivada a la ecuación en diferencias}
+\label{subsec:derivada-diferencias}
+
+Sea $x(t)$ una cantidad que cambia con el tiempo. Su derivada $x'(t)$ es la tasa de cambio
+instantánea, definida como el límite del cociente incremental cuando el incremento $h$ tiende a
+cero. Una computadora no puede tomar ese límite: opera con un incremento $h > 0$ fijo. Si $h$ es
+pequeño, el cociente incremental aproxima a la derivada,
+\begin{equation}
+  x'(t) \approx \frac{x(t+h) - x(t)}{h} .
+  \label{eq:cociente-incremental}
+\end{equation}
+Cuando la cantidad satisface una ecuación diferencial de primer orden $x'(t) = f(t, x)$ con
+condición inicial $x(t_0) = x_0$, lo que se llama un problema de valor inicial, se puede
+reemplazar $x'(t)$ por $f(t, x)$ en \eqref{eq:cociente-incremental} y despejar el valor
+siguiente:
+\begin{equation}
+  x(t+h) \approx x(t) + h\, f(t, x(t)) .
+  \label{eq:aproximacion-tangente}
+\end{equation}
+La lectura geométrica de \eqref{eq:aproximacion-tangente} es que, durante un intervalo de
+longitud $h$, la solución se reemplaza por su recta tangente en el punto de partida: la
+pendiente $f(t, x)$ se supone constante en todo el intervalo. Si se fijan los instantes
+$t_n = t_0 + nh$ y se llama $x_n$ al valor aproximado en $t_n$, la aproximación se convierte en
+la ecuación en diferencias $x_{n+1} = x_n + h\, f(t_n, x_n)$, que define una sucesión por
+recurrencia: cada término se calcula a partir del anterior. Esa sucesión es el método de Euler
+(Burden et al., 2016).
+
+\subsection{Método de Euler}
+\label{subsec:euler}
+
+El método de Euler aproxima la solución del problema de valor inicial
+$x'(t) = f(t, x)$, $x(t_0) = x_0$, sobre un intervalo $[t_0, t_f]$ mediante la sucesión
+\begin{equation}
+  x_{n+1} = x_n + h\, f(t_n, x_n), \qquad n = 0, 1, \ldots, N - 1 ,
+  \label{eq:euler}
+\end{equation}
+con los instantes y el número de pasos dados por
+\begin{equation}
+  t_n = t_0 + n h, \qquad N = \frac{t_f - t_0}{h} .
+  \label{eq:tiempos}
+\end{equation}
+El parámetro $h > 0$ es el tamaño del paso. Cada paso evalúa $f$ una sola vez, y el número de
+pasos crece como $1/h$: reducir $h$ a la mitad duplica el trabajo. Burden et al. (2016) deducen
+\eqref{eq:euler} del desarrollo de Taylor de la solución en torno a $t_n$,
+$x(t_{n+1}) = x(t_n) + h\, x'(t_n) + \tfrac{h^2}{2}\, x''(\xi_n)$, descartando el término de
+segundo orden. Lo que el método omite en cada paso es, entonces, proporcional a $h^2$.
+
+Un caso límite sirve de verificación: cuando $f$ es constante, la solución es una recta y
+coincide con su tangente, así que \eqref{eq:euler} la reproduce de forma exacta para cualquier
+$h$. Cuando $f$ depende de $x$, la pendiente cambia dentro de cada intervalo y la recta tangente
+se separa de la curva.
+
+\subsection{Método de Euler mejorado}
+\label{subsec:euler-mejorado}
+
+El método de Euler usa solo la pendiente al comienzo de cada intervalo. El método de Euler
+mejorado la corrige con la pendiente al final del intervalo, que no se conoce porque depende de
+$x_{n+1}$, y por eso se la estima primero con un paso de Euler. El método consta de una
+predicción y una corrección:
+\begin{equation}
+  \tilde{x}_{n+1} = x_n + h\, f(t_n, x_n), \qquad
+  x_{n+1} = x_n + \frac{h}{2} \bigl[ f(t_n, x_n) + f(t_{n+1}, \tilde{x}_{n+1}) \bigr] .
+  \label{eq:heun}
+\end{equation}
+La corrección avanza con el promedio de las dos pendientes, la inicial y la predicha, en lugar
+de con la inicial sola. El costo es de dos evaluaciones de $f$ por paso, el doble que en
+\eqref{eq:euler}. En la bibliografía este esquema se conoce como método de Heun (Burden et al.,
+2016); en este informe se usa el nombre de la consigna, Euler mejorado.
+
+\subsection{Error absoluto y orden de un método}
+\label{subsec:error-orden}
+
+Cuando se conoce la solución de referencia $x(t)$, la calidad de una aproximación se mide con el
+error absoluto en cada instante,
+\begin{equation}
+  E_n = \lvert x(t_n) - x_n \rvert .
+  \label{eq:error-absoluto}
+\end{equation}
+De esa sucesión interesan dos resúmenes: el error final $E_N$, en el último instante del
+intervalo, y el error máximo $\max_n E_n$ sobre todo el intervalo. Los dos describen el error
+global, el acumulado tras $N$ pasos, que es distinto del error que comete un solo paso partiendo
+de un valor exacto, llamado error de truncamiento local (Burden et al., 2016).
+
+Un método es de orden $p$ cuando su error global es proporcional a $h^p$ para $h$ pequeño:
+existe una constante $C$, que depende del problema y del intervalo pero no de $h$, tal que
+\begin{equation}
+  E_N \le C\, h^{p} .
+  \label{eq:orden}
+\end{equation}
+El método de Euler es de orden~1 y el de Euler mejorado es de orden~2 (Burden et al., 2016).
+Que Euler sea de orden 1 y no 2, cuando su error local es proporcional a $h^2$, se explica
+porque ese error local se acumula a lo largo de $N = (t_f - t_0)/h$ pasos. La consecuencia
+práctica de \eqref{eq:orden} es que reducir $h$ a la mitad reduce el error de Euler a la mitad y
+el de Euler mejorado a la cuarta parte; en una gráfica de $E_N$ contra $h$ con ambos ejes
+logarítmicos, cada método aparece como una recta de pendiente $p$.
+
+La cota \eqref{eq:orden} describe solo el error de truncamiento. Cada operación en punto
+flotante agrega un error de redondeo, y la cantidad de operaciones crece como $1/h$. Burden et
+al. (2016) muestran que, con redondeo de tamaño $\delta$ por paso, la cota del error de Euler
+tiene un término proporcional a $h$ y otro proporcional a $\delta/h$, de modo que existe un valor
+de $h$ por debajo del cual el error total deja de disminuir.
+
+\subsection{Modelo de remediación de vulnerabilidades}
+\label{subsec:modelo-remediacion}
+
+La consigna modela la cantidad $V(t)$ de equipos vulnerables de una organización con el problema
+de valor inicial
+\begin{equation}
+  V'(t) = -k\, V(t), \qquad V(0) = V_0 ,
+  \label{eq:modelo-remediacion}
+\end{equation}
+donde $k > 0$ es la rapidez de remediación. El modelo supone que en cada instante se corrige una
+fracción fija $k$ de los equipos que siguen vulnerables, así que la cantidad disminuye tanto más
+rápido cuanto más equipos quedan por corregir. Las unidades de $k$ son el inverso de las del
+tiempo, y su recíproco $1/k$ es un tiempo característico del proceso. La consigna proporciona
+como solución de referencia
+\begin{equation}
+  V(t) = V_0\, e^{-kt} ,
+  \label{eq:solucion-referencia}
+\end{equation}
+sin pedir que se la deduzca; en este informe se la usa tal como se la recibe y no se resuelve
+ninguna ecuación diferencial por métodos analíticos. De \eqref{eq:solucion-referencia} se leen
+tres propiedades: $V(t)$ es positiva para todo $t$, decrece de forma monótona y tiende a cero. En
+el tiempo $t = 1/k$ queda la fracción $e^{-1} \approx 0.37$ de los equipos iniciales, y en
+$t = \ln 2 / k$ queda la mitad. El caso de verificación $x' = -x$, $x(0) = 1$ es este mismo
+modelo con $k = 1$ y $V_0 = 1$.
+
+\subsection{Modelo discreto y estabilidad}
+\label{subsec:modelo-discreto}
+
+Al aplicar \eqref{eq:euler} a \eqref{eq:modelo-remediacion}, con $f(t, V) = -kV$, se obtiene
+$V_{n+1} = V_n - hk\, V_n$, es decir,
+\begin{equation}
+  V_{n+1} = (1 - hk)\, V_n .
+  \label{eq:modelo-discreto}
+\end{equation}
+Cada término es el anterior multiplicado por la constante $r = 1 - hk$: la sucesión $(V_n)$ es
+geométrica de razón $r$. Aplicando \eqref{eq:modelo-discreto} de forma repetida,
+$V_1 = r V_0$, $V_2 = r V_1 = r^2 V_0$, y en general
+\begin{equation}
+  V_n = V_0\, (1 - hk)^{n}, \qquad n = 0, 1, 2, \ldots
+  \label{eq:modelo-discreto-explicito}
+\end{equation}
+Esta es la única deducción analítica del trabajo, y recae sobre una sucesión, no sobre una
+ecuación diferencial. La solución de referencia evaluada en los mismos instantes también es
+geométrica, porque $t_n = nh$ da
+\begin{equation}
+  V(t_n) = V_0\, e^{-khn} = V_0\, \bigl(e^{-hk}\bigr)^{n} ,
+  \label{eq:referencia-discreta}
+\end{equation}
+con razón $e^{-hk}$ en lugar de $1 - hk$. Como $1 - hk$ es el polinomio de Taylor de primer
+grado de $e^{-hk}$ y la exponencial está por encima de su tangente, se cumple
+$0 < 1 - hk < e^{-hk}$ para $0 < hk < 1$: la aproximación de Euler queda por debajo de la
+referencia en cada paso, y la diferencia entre las dos razones se achica cuando $hk$ tiende a
+cero.
+
+El comportamiento de \eqref{eq:modelo-discreto-explicito} cuando $n \to \infty$ lo decide la
+razón. Como $h > 0$ y $k > 0$, el producto $hk$ es positivo y $r < 1$; quedan los casos
+siguientes.
+\begin{itemize}
+  \item Si $0 < hk < 1$, entonces $0 < r < 1$: la sucesión es positiva, decreciente y tiende a
+        cero, como la solución de referencia.
+  \item Si $hk = 1$, entonces $r = 0$: $V_1 = 0$ y todos los términos siguientes son nulos. La
+        cantidad de equipos vulnerables cae a cero en un solo paso.
+  \item Si $1 < hk < 2$, entonces $-1 < r < 0$: los términos alternan de signo y su valor
+        absoluto decrece, así que la sucesión tiende a cero pero pasa por valores negativos.
+  \item Si $hk = 2$, entonces $r = -1$: la sucesión alterna entre $V_0$ y $-V_0$ y no tiene
+        límite.
+  \item Si $hk > 2$, entonces $r < -1$: los términos alternan de signo y su valor absoluto crece
+        sin cota. La sucesión diverge.
+\end{itemize}
+La sucesión converge a cero exactamente cuando $\lvert r \rvert < 1$, lo que se traduce en la
+condición de estabilidad
+\begin{equation}
+  \lvert 1 - hk \rvert < 1 \quad \Longleftrightarrow \quad 0 < hk < 2 .
+  \label{eq:estabilidad}
+\end{equation}
+Burden et al. (2016) obtienen esa misma condición para el método de Euler aplicado a la
+ecuación de prueba $x' = \lambda x$ con $\lambda < 0$, y la llaman región de estabilidad absoluta.
+La condición \eqref{eq:estabilidad} garantiza que la sucesión se extinga, pero no que tenga
+sentido para el fenómeno: una cantidad de equipos no puede ser negativa, y la referencia
+\eqref{eq:solucion-referencia} nunca lo es. Para que el modelo discreto conserve el signo y la
+monotonía de la referencia hace falta $0 < hk < 1$. Conviene distinguir esta noción de la
+convergencia del método: la estabilidad describe lo que hace la sucesión con un $h$ fijo cuando
+$n$ crece; la convergencia, que el error \eqref{eq:error-absoluto} tienda a cero cuando $h$
+tiende a cero con el intervalo fijo.
+
+\subsection{Modelo con aparición de nuevas vulnerabilidades}
+\label{subsec:nuevas-vulnerabilidades}
+
+El modelo \eqref{eq:modelo-remediacion} supone que solo se corrigen vulnerabilidades. Para
+representar que mientras tanto aparecen equipos vulnerables nuevos, la consigna agrega un
+término constante:
+\begin{equation}
+  V'(t) = \lambda - k\, V(t), \qquad V(0) = V_0 ,
+  \label{eq:modelo-lambda}
+\end{equation}
+donde $\lambda \ge 0$ es la tasa de aparición, en equipos por unidad de tiempo. Con
+$\lambda = 0$ se recupera \eqref{eq:modelo-remediacion}. La consigna no da una solución de
+referencia para \eqref{eq:modelo-lambda} y este informe no la deduce; el análisis se apoya en
+el signo de la derivada. La cantidad deja de cambiar cuando $V'(t) = 0$, es decir, cuando
+$\lambda - kV = 0$, lo que define el valor de equilibrio
+\begin{equation}
+  V^{*} = \frac{\lambda}{k} .
+  \label{eq:equilibrio}
+\end{equation}
+Si $V > V^{*}$ la derivada es negativa y la cantidad baja; si $V < V^{*}$ la derivada es positiva
+y la cantidad sube. En los dos casos $V$ se mueve hacia $V^{*}$, que es el nivel en el que la
+remediación $kV$ compensa exactamente la aparición $\lambda$.
+
+El método de Euler aplicado a \eqref{eq:modelo-lambda} da
+$V_{n+1} = V_n + h(\lambda - kV_n) = (1 - hk) V_n + h\lambda$. Si se mide el desvío respecto
+del equilibrio, $D_n = V_n - V^{*}$, y se usa que $h\lambda = hk\, V^{*}$, resulta
+\begin{equation}
+  D_{n+1} = (1 - hk)\, D_n ,
+  \label{eq:desvio-equilibrio}
+\end{equation}
+la misma sucesión geométrica de \eqref{eq:modelo-discreto}. El equilibrio es un punto fijo del
+modelo discreto, y la condición \eqref{eq:estabilidad} decide del mismo modo si la simulación se
+acerca a él de forma monótona, oscilando o si se aleja.
+
+\subsection{Gestión de vulnerabilidades}
+\label{subsec:gestion-vulnerabilidades}
+
+Los conceptos de esta subsección provienen de documentos técnicos de organismos de referencia en
+ciberseguridad: el Instituto Nacional de Estándares y Tecnología de Estados Unidos (NIST), la
+Agencia de Ciberseguridad y Seguridad de Infraestructura (CISA), el foro FIRST y la corporación
+MITRE. Su relación con los parámetros del modelo se discute en la
+Sección~\ref{sec:discusion}.
+
+\subsubsection{Vulnerabilidad, parche y remediación}
+\label{subsubsec:vulnerabilidad-parche}
+
+Una vulnerabilidad es una debilidad en un sistema de información, en sus procedimientos de
+seguridad, en sus controles internos o en su implementación que una fuente de amenaza puede
+explotar o activar (National Institute of Standards and Technology [NIST], s.f.). Un parche de
+seguridad es la corrección que elimina esa debilidad: Souppaya y Scarfone (2022) definen el
+parcheo como el acto de aplicar un cambio al software instalado, sea firmware, sistema operativo
+o aplicación, que corrige problemas de seguridad o de funcionamiento. La gestión de parches a
+escala de una organización es el proceso de identificar, priorizar, adquirir, instalar y
+verificar la instalación de parches, actualizaciones y mejoras en todos sus activos (Souppaya y
+Scarfone, 2022).
+
+El mismo documento ubica el parcheo dentro de la gestión de vulnerabilidades, que es la
+actividad más amplia de conocer qué vulnerabilidades afectan a los activos de la organización,
+evaluar el riesgo que implican y elegir una respuesta. Las respuestas posibles son aceptar el
+riesgo, mitigarlo, transferirlo o evitarlo, y parchear o actualizar el software son las únicas
+que eliminan la vulnerabilidad sin quitar funcionalidad (Souppaya y Scarfone, 2022). La
+remediación es la ejecución de esa respuesta sobre cada equipo afectado, y el tiempo de
+remediación es el que transcurre desde que la vulnerabilidad se conoce, o desde que el parche
+está disponible, hasta que el equipo deja de ser vulnerable. Ese tiempo rara vez es nulo:
+Souppaya y Scarfone (2022) enumeran como causas de demora que el parche todavía no exista, que
+el proveedor haya dejado de dar soporte al producto, que haga falta probar el parche o esperar
+una ventana de mantenimiento, y que el software dependa de otros componentes que también hay que
+actualizar. Para organizar esas diferencias, el documento distingue escenarios con plazos
+distintos: parcheo de rutina, parcheo de emergencia, mitigación de emergencia cuando no hay
+parche y activos que no se pueden parchear.
+
+\subsubsection{CVE y CVSS}
+\label{subsubsec:cve-cvss}
+
+CVE (Common Vulnerabilities and Exposures) es el catálogo público de vulnerabilidades
+divulgadas. La misión del programa es identificar, definir y catalogar las vulnerabilidades de
+ciberseguridad hechas públicas, de modo que cada una tenga un registro único, el CVE Record,
+con un identificador de la forma CVE-AAAA-NNNNN que todos los proveedores, herramientas y
+bases de datos usan para referirse a ella. El programa está patrocinado por CISA, agencia del
+Departamento de Seguridad Nacional de Estados Unidos, y lo opera la corporación MITRE (MITRE
+Corporation, 2021).
+
+CVSS (Common Vulnerability Scoring System) es el sistema de puntuación que mide la severidad de
+una vulnerabilidad en una escala de $0.0$ a $10.0$. La versión vigente es la 4.0, mantenida por
+el Forum of Incident Response and Security Teams (FIRST, 2024). La puntuación se construye con
+cuatro grupos de métricas: las básicas, que describen propiedades intrínsecas de la
+vulnerabilidad, como el vector de ataque, la complejidad, los privilegios requeridos y el
+impacto sobre la confidencialidad, la integridad y la disponibilidad; las de amenaza, que
+cambian con el tiempo, como la existencia de un exploit; las ambientales, propias de cada
+organización; y las suplementarias, que agregan contexto sin alterar el número. La escala
+cualitativa asociada es Ninguna ($0.0$), Baja ($0.1$ a $3.9$), Media ($4.0$ a $6.9$), Alta
+($7.0$ a $8.9$) y Crítica ($9.0$ a $10.0$). La especificación aclara que factores como las
+exigencias regulatorias, la cantidad de clientes afectados o el daño reputacional quedan fuera
+de su alcance (FIRST, 2024): CVSS mide severidad técnica, no el riesgo completo para una
+organización.
+
+\subsubsection{Priorización y consecuencias de no actualizar}
+\label{subsubsec:priorizacion}
+
+Ninguna organización puede parchear todo de inmediato, así que la gestión de vulnerabilidades
+exige priorizar. Souppaya y Scarfone (2022) proponen ordenar los parches según cuánto riesgo
+reducen: un parche tiene mayor prioridad si corrige una vulnerabilidad severa, presente en
+muchos activos o en activos importantes, o que ya se está explotando; uno que corrige una
+vulnerabilidad de bajo riesgo en pocos activos poco importantes puede esperar. La severidad
+CVSS es un insumo de ese ordenamiento, pero no el único. CISA mantiene el catálogo de
+vulnerabilidades explotadas conocidas (KEV), que reúne las vulnerabilidades con evidencia de
+explotación activa, y recomienda a las organizaciones priorizar su remediación para reducir la
+probabilidad de ser comprometidas por actores conocidos (Cybersecurity and Infrastructure
+Security Agency [CISA], s.f.).
+
+Mantener sistemas sin actualizar tiene consecuencias directas. Una vez que una vulnerabilidad se
+hace pública, el riesgo suele aumentar porque los atacantes desarrollan exploits para ella, y
+cada parche de rutina que se posterga abre una ventana de oportunidad adicional (Souppaya y
+Scarfone, 2022). Si la vulnerabilidad sin parchear se explota, la organización enfrenta una
+filtración de datos o una infección por ransomware, debe ejecutar una respuesta a incidentes,
+puede sufrir daño reputacional y multas, y de todos modos termina instalando el parche que había
+pospuesto. El documento agrega que postergar el parcheo de rutina vuelve más difícil y
+disruptivo el parcheo de emergencia, porque los parches nuevos suelen requerir los anteriores.
+
+\subsubsection{MITRE ATT\&CK y la técnica T1190}
+\label{subsubsec:attack-t1190}
+
+MITRE ATT\&CK es una base de conocimiento, mantenida por la corporación MITRE, de las tácticas
+y técnicas que usan los atacantes, construida a partir de observaciones de intrusiones reales.
+Se organiza en matrices; la matriz Enterprise cubre sistemas operativos de escritorio y
+servidor, redes y nube. Cada columna es una táctica, el objetivo que persigue el atacante en una
+etapa de la intrusión, y cada celda es una técnica, la forma concreta de alcanzarlo.
+
+La técnica T1190, Exploit Public-Facing Application, pertenece a la táctica de acceso inicial.
+Consiste en explotar una debilidad de un sistema expuesto a Internet para obtener el primer
+acceso a la red de la organización. La debilidad puede ser un error de software, una falla
+transitoria o una configuración incorrecta, y los objetivos habituales son sitios y servidores
+web, bases de datos, servicios estándar como SMB o SSH, protocolos de administración de equipos
+de red y cualquier otro sistema con puertos accesibles desde Internet (MITRE Corporation, 2026).
+Entre las mitigaciones que ATT\&CK asocia a esta técnica figuran la actualización del software,
+con gestión regular de parches sobre las aplicaciones expuestas, el escaneo periódico de
+vulnerabilidades con parcheo rápido de las críticas, la segmentación de red y la verificación de
+que todo servicio expuesto lo esté de forma intencional (MITRE Corporation, 2026).
