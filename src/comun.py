@@ -40,10 +40,16 @@ def aplicar_estilo() -> None:
 
 
 def guardar_figura(fig: plt.Figure, nombre: str) -> Path:
-    """Guarda la figura en informe/figuras/<nombre>.pdf y cierra la figura."""
+    """Guarda la figura en informe/figuras/<nombre>.pdf y cierra la figura.
+
+    Se vacían la fecha de creación y el productor del PDF: si no, cada corrida de
+    `main.py` cambia los bytes de todas las figuras sin cambiar su contenido y git
+    las marca como modificadas.
+    """
     DIR_FIGURAS.mkdir(parents=True, exist_ok=True)
     ruta = DIR_FIGURAS / f"{nombre}.pdf"
-    fig.savefig(ruta, bbox_inches="tight")
+    fig.savefig(ruta, bbox_inches="tight",
+                metadata={"CreationDate": None, "ModDate": None, "Producer": None})
     plt.close(fig)
     return ruta
 
