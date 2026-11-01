@@ -83,7 +83,8 @@ de un equipo con cualquier $h$. El instante en que el error de $h = 1$ es mayor 
 organizaciones: en la A es mayor en $t = 10$, en la B y en la C es mayor en $t = 5$.
 ($V_0 = 1000$). Para cada organización, la fila ``ref.'' da el valor de referencia
 $V_0 e^{-kt}$ y las tres siguientes, el valor aproximado por Euler con $h = 1$, $0.5$ y $0.1$
-junto con el error absoluto $E(t) = |V(t) - V_n|$. Todos los valores están en equipos.}
+junto con el error absoluto $E(t) = |V(t) - V_n|$. Todos los valores están en equipos; las
+fracciones de equipo corresponden al modelo continuo, que no redondea a enteros.}
 La sucesión $V_{n+1} = (1 - hk)\,V_n$ para la organización C ($k = 0.7$, $V_0 = 1000$) con
 $h = 1$, $h = 2$ y $h = 3$, es decir $hk = 0.7$, $1.4$ y $2.1$, está en la Figura
 queda por debajo de la referencia en todos los nodos. Con $hk = 1.4$ la sucesión cambia de signo

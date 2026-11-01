@@ -34,6 +34,8 @@ Las figuras se guardan en informe/figuras/ y las tablas en informe/tablas/. La c
 imprime un resumen corto: los valores en t = 5, 10, 15 de la Actividad 4 con h = 1, los
 primeros seis términos de cada sucesión de la Actividad 5 y el valor final de cada λ.
 """
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -100,6 +102,21 @@ def etiqueta_paso(h: float) -> str:
     return f"Euler, $h = {h:g}$"
 
 
+def formato_tabla(x: float, decimales: int) -> str:
+    """Formato de celda para la tabla de organizaciones: punto fijo o notación científica.
+
+    Con decimales fijos, los valores chicos de la organización C (por ejemplo la referencia
+    en t = 15, que vale 0.0275 equipos) salen como "0.0" y parecen cero. Si el valor
+    redondeado no es cero se usa el formato fijo de comun.formato_decimal; si lo es, dos
+    cifras significativas en notación científica, en modo matemático.
+    """
+    if x == 0.0 or abs(x) >= 0.5 * 10 ** (-decimales):
+        return comun.formato_decimal(x, decimales)
+    exponente = math.floor(math.log10(abs(x)))
+    mantisa = x / 10 ** exponente
+    return rf"${mantisa:.1f} \times 10^{{{exponente}}}$"
+
+
 def actividad_organizaciones() -> None:
     """Actividad 4: organizaciones A, B y C con Euler para tres pasos. Figura y tabla."""
     fig, ejes = plt.subplots(1, 3, figsize=(10, 3.6), sharey=True)
@@ -112,7 +129,7 @@ def actividad_organizaciones() -> None:
                  label=r"Referencia $V_0 e^{-kt}$")
         fila_referencia = [f"{nombre} ($k = {k:g}$)", "ref."]
         for t_obj in TIEMPOS_TABLA:
-            fila_referencia += [comun.formato_decimal(referencia(t_obj), 1), "--"]
+            fila_referencia += [formato_tabla(referencia(t_obj), 1), "--"]
         filas.append(fila_referencia)
         for h in PASOS_ORGANIZACIONES:
             tiempos, valores, _ = euler(campo_remediacion(k), V0, 0.0,
@@ -124,8 +141,7 @@ def actividad_organizaciones() -> None:
             resumen = []
             for t_obj in TIEMPOS_TABLA:
                 n = indice_del_tiempo(tiempos, t_obj, h)
-                fila += [comun.formato_decimal(valores[n], 1),
-                         comun.formato_decimal(errores[n], 2)]
+                fila += [formato_tabla(valores[n], 1), formato_tabla(errores[n], 2)]
                 resumen.append(f"V({t_obj:g}) = {valores[n]:.1f} / {referencia(t_obj):.1f}")
             filas.append(fila)
             if h == 1.0:
