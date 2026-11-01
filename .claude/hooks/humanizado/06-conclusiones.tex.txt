@@ -1,0 +1,64 @@
+Los tres experimentos responden al objetivo general con una misma lectura. La precisión de un
+método de paso fijo la gobierna su orden; su costo, el número de pasos, que crece como $1/h$; y
+su estabilidad, el producto adimensional $hk$ entre el paso y la rapidez del fenómeno. Las tres
+cosas se midieron sobre ecuaciones con solución de referencia y se compararon con lo que predice
+la teoría. Dentro del rango en que la teoría afirma valer, ninguna medición contradijo la
+predicción. Sobre el modelo de remediación, el método de Euler reproduce el
+decaimiento exponencial de los equipos vulnerables mientras el paso sea menor que el tiempo
+característico $1/k$. El parámetro $k$ resume el proceso de parcheo de una organización.
+Sobre el primer objetivo, las dos funciones quedaron implementadas con la interfaz de la consigna
+y verificadas. Con pendiente constante, Euler reproduce la recta de referencia sin error para
+cualquier paso, como corresponde a un método que avanza por la tangente. Con decrecimiento
+exponencial, el método se separa de la referencia según el paso, y el caso $h = 1$ mostró el
+comportamiento límite en que la aproximación cae a cero en un solo paso.
+Sobre el segundo, el error máximo de Euler se divide por cerca de diez cada vez que $h$ se divide
+por diez, y el de Euler mejorado por cerca de cien, de acuerdo con los órdenes 1 y 2 de la
+teoría; el número de pasos crece como $1/h$ en los dos. La conclusión práctica es que Euler
+mejorado, con el doble de evaluaciones por paso, alcanza con 200 evaluaciones un error menor que
+Euler con 1\,000. El error final resultó un indicador menos confiable que el error máximo para
+leer el orden, porque depende de dónde termina el intervalo. Un paso más chico no es siempre
+conveniente. Dentro del rango ensayado no se alcanzó el régimen en que el redondeo acumulado
+domina, pero el costo de cada dígito adicional sí se hizo visible. En problemas con $f$ cara
+de evaluar, ese costo puede superar el beneficio.
+Sobre el tercero, las tres organizaciones se comportan como tres escalas de tiempo de la misma
+curva: la que tiene $k = 0.7$ queda con menos de un equipo vulnerable en diez días, y la que
+tiene $k = 0.1$ conserva más de un tercio de su parque en el mismo plazo. El parámetro $k$ es la
+fracción de los equipos pendientes que se corrige por día, y su inversa es el tiempo
+característico de remediación. Las diferencias reales entre organizaciones remiten a las demoras
+del proceso de parcheo que documenta la bibliografía técnica: disponibilidad del parche,
+pruebas, ventanas de mantenimiento, dependencias y automatización. El error de la simulación
+con un paso dado crece con $k$, lo que muestra que el paso adecuado se mide en relación con la
+rapidez del fenómeno.
+Sobre el cuarto, la deducción analítica y la simulación coinciden. La sucesión
+$V_n = V_0 (1 - hk)^n$ conserva el signo y la monotonía de la referencia solo si $0 < hk < 1$;
+con $1 < hk < 2$ converge a cero pero oscila entre valores negativos y positivos, y con
+$hk \ge 2$ diverge. Las corridas con $hk = 1.4$ y $hk = 2.1$ mostraron esos dos comportamientos. Una
+cantidad negativa de equipos vulnerables no tiene sentido, y su aparición es un síntoma de que
+el paso es demasiado grande para la rapidez del proceso, no una propiedad del fenómeno.
+Sobre el quinto, con aparición de vulnerabilidades nuevas la cantidad de equipos vulnerables no
+tiende a cero ni crece sin límite: se estabiliza en el equilibrio $\lambda/k$. Lo hace con la
+misma rapidez para cualquier $\lambda$, porque el desvío respecto del equilibrio sigue la misma
+sucesión geométrica del modelo sin $\lambda$. Para una organización eso significa un piso
+permanente de equipos vulnerables, proporcional a la tasa de aparición e inversamente
+proporcional a la rapidez de remediación.
+Sobre el sexto, el parámetro $k$ es el resumen numérico del proceso de gestión de
+vulnerabilidades que describen NIST, MITRE, FIRST y CISA. La técnica T1190 actúa sobre la
+población $V(t)$ que el modelo cuenta. Reducir el tiempo de remediación, es decir aumentar $k$,
+baja la curva, baja el piso $\lambda/k$ y acorta la ventana en que un sistema expuesto puede
+ser explotado. Las limitaciones del modelo son las de sus supuestos: equipos y vulnerabilidades
+intercambiables, $k$ constante, ausencia de ataques y una aparición de vulnerabilidades continua
+y uniforme.
+De lo anterior se desprenden tres recomendaciones para quien use estos métodos sobre un modelo
+de este tipo. Elegir el paso a partir de $hk$ y no de $h$: con $hk < 1$ la simulación conserva
+el sentido del fenómeno, y con $hk$ cerca de $0.1$ el error es del orden del 1\,\% al 3\,\%.
+Medir la precisión con el error máximo y no solo con el error final. Y preferir Euler mejorado
+cuando la precisión importa, porque a igual número de evaluaciones de $f$ es el más exacto de
+los dos.
+Quedan líneas abiertas. Del lado numérico, extender la comparación a métodos de orden mayor,
+como los de Runge-Kutta, y buscar de manera explícita el paso a partir del cual el redondeo
+acumulado domina al error de truncamiento. Del lado del modelo, separar los equipos por clase de
+severidad con un $k$ propio para cada una, incorporar una tasa de aparición con saltos que
+represente los ciclos de publicación de parches, limitar la remediación a una capacidad finita
+y agregar un término de explotación que convierta equipos vulnerables en equipos comprometidos.
+Ninguna de esas variantes tiene solución de referencia. En ellas, la simulación numérica ya no
+verifica una fórmula conocida: es el modo de obtener la solución.
