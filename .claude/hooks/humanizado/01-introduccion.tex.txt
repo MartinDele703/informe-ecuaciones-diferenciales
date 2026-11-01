@@ -1,0 +1,63 @@
+Muchas cantidades de interés cambian con el tiempo a un ritmo que depende de su propio valor: la
+temperatura de un cuerpo que se enfría, el saldo de una deuda con interés, la población de una
+especie, la cantidad de equipos de una red que todavía no recibieron un parche. La forma
+matemática de esa dependencia es una ecuación diferencial, que relaciona la derivada de la
+cantidad con la cantidad misma. Pocas de esas ecuaciones tienen una solución que se pueda
+escribir con una fórmula, y aun cuando la tienen, las variantes más realistas del modelo la
+pierden enseguida. La alternativa es aproximar la solución paso a paso, reemplazando la derivada
+por un cociente incremental con un incremento $h$ fijo. Ese reemplazo convierte la ecuación
+diferencial en una ecuación en diferencias, una sucesión definida por recurrencia que una
+computadora puede calcular término a término. El método de Euler es la versión más simple de esa
+idea, y el método de Euler mejorado, una corrección que usa dos pendientes por paso en lugar de
+una (Burden et al., 2016).
+El precio de la aproximación es un error, y la pregunta central de los métodos numéricos es cómo
+se comporta ese error. Depende del tamaño del paso: pasos más chicos siguen mejor la curva, pero
+exigen más pasos y más cálculo. El método también cuenta, porque uno de orden superior gana
+precisión más rápido al reducir $h$ aunque cada paso le cueste más. Y la ecuación misma: para
+ciertas combinaciones de paso y problema, la sucesión numérica deja de parecerse a la solución,
+oscila o diverge, aunque el método esté bien implementado. Medir esas dependencias requiere casos con
+solución conocida, contra los cuales se pueda calcular el error exacto en cada instante.
+Este trabajo toma como aplicación un problema de ciberseguridad. Una organización que administra
+muchos equipos descubre vulnerabilidades en ellos de forma continua, y las corrige instalando
+parches. Si en cada momento se corrige una fracción fija $k$ de los equipos que siguen
+vulnerables, la cantidad $V(t)$ de equipos vulnerables obedece a $V' = -kV$, el mismo tipo de
+ecuación que el enfriamiento o la desintegración radiactiva. El parámetro $k$ resume la
+rapidez con que la organización remedia, y una variante del modelo agrega una tasa $\lambda$ de
+aparición de vulnerabilidades nuevas. Las vulnerabilidades que permanecen sin corregir en
+sistemas expuestos a Internet son el punto de entrada de una técnica de intrusión documentada,
+la explotación de aplicaciones públicas que MITRE ATT\&CK cataloga como T1190
+(MITRE Corporation, 2026); el tiempo que tarda una organización en remediar es, por lo tanto,
+una medida de su exposición.
+El modelo tiene dos virtudes para este estudio. La solución de referencia $V(t) = V_0 e^{-kt}$
+es conocida, así que el error del método se puede medir. Y la ecuación en diferencias que
+produce Euler sobre él, $V_{n+1} = (1 - hk) V_n$, es una sucesión geométrica cuyo comportamiento
+se puede analizar por completo, lo que permite anticipar con exactitud cuándo la simulación
+tiene sentido y cuándo no.
+El objetivo general es evaluar la precisión, el costo y la estabilidad de los métodos de Euler y
+de Euler mejorado sobre ecuaciones diferenciales de primer orden con solución de referencia
+conocida, y aplicar el método de Euler a un modelo de remediación de vulnerabilidades para
+interpretar sus parámetros en términos de la gestión de seguridad de una organización. De ahí se
+desprenden seis objetivos específicos:
+fija la consigna, y verificar la implementación sobre dos ecuaciones con solución de
+referencia, una con pendiente constante y otra con decrecimiento exponencial.
+comparar el orden de los dos métodos y establecer el compromiso entre precisión y costo
+computacional, incluido el caso en que un paso más chico deja de ser conveniente.
+$k$, cuantificar el error de la simulación en instantes fijos e interpretar qué representa
+$k$ y qué factores reales explican sus diferencias.
+discreto conserva el sentido del fenómeno, y describir qué ocurre fuera de ese rango.
+equilibrio y evaluar si la cantidad de equipos vulnerables tiende a disminuir, a crecer o a
+estabilizarse.
+definidos por organismos técnicos (CVE, CVSS, remediación, MITRE ATT\&CK y la técnica T1190),
+y señalar las limitaciones del modelo frente a una organización real.
+El informe se organiza en cinco secciones además de esta, más la bibliografía. La sección
+derivada a la ecuación en diferencias, los dos métodos, el error absoluto y el orden, el modelo
+de remediación con y sin aparición de vulnerabilidades, la deducción del modelo discreto y su
+condición de estabilidad, y los conceptos de gestión de vulnerabilidades con sus fuentes. La
+sección \ref{sec:metodologia} describe el entorno, la organización del código, el diseño de los
+tres experimentos, los criterios de análisis, las decisiones que la consigna deja libres y la
+ubicación del repositorio. La sección \ref{sec:resultados} presenta las mediciones agrupadas por
+fenómeno: la verificación, la relación entre error y paso, la comparación de métodos, el efecto
+de $k$, la estabilidad del modelo discreto y el modelo con $\lambda$. La sección
+plantea cada fenómeno, conecta el modelo con la gestión de vulnerabilidades y enumera sus
+limitaciones. La sección \ref{sec:conclusiones} sintetiza las respuestas a los objetivos y señala
+líneas de trabajo posteriores.

@@ -19,10 +19,10 @@ una (Burden et al., 2016).
 
 El precio de la aproximación es un error, y la pregunta central de los métodos numéricos es cómo
 se comporta ese error. Depende del tamaño del paso: pasos más chicos siguen mejor la curva, pero
-exigen más pasos y más cálculo. Depende del método: uno de orden superior gana precisión más
-rápido al reducir $h$, pero cada paso le cuesta más. Y depende de la ecuación: para ciertas
-combinaciones de paso y problema, la sucesión numérica deja de parecerse a la solución, oscila
-o diverge, aunque el método esté bien implementado. Medir esas dependencias requiere casos con
+exigen más pasos y más cálculo. El método también cuenta, porque uno de orden superior gana
+precisión más rápido al reducir $h$ aunque cada paso le cueste más. Y la ecuación misma: para
+ciertas combinaciones de paso y problema, la sucesión numérica deja de parecerse a la solución,
+oscila o diverge, aunque el método esté bien implementado. Medir esas dependencias requiere casos con
 solución conocida, contra los cuales se pueda calcular el error exacto en cada instante.
 
 Este trabajo toma como aplicación un problema de ciberseguridad. Una organización que administra
@@ -32,8 +32,8 @@ vulnerables, la cantidad $V(t)$ de equipos vulnerables obedece a $V' = -kV$, el 
 ecuación que el enfriamiento o la desintegración radiactiva. El parámetro $k$ resume la
 rapidez con que la organización remedia, y una variante del modelo agrega una tasa $\lambda$ de
 aparición de vulnerabilidades nuevas. Las vulnerabilidades que permanecen sin corregir en
-sistemas expuestos a Internet son la materia prima de una de las técnicas de intrusión más
-documentadas, la explotación de aplicaciones públicas que MITRE ATT\&CK cataloga como T1190
+sistemas expuestos a Internet son el punto de entrada de una técnica de intrusión documentada,
+la explotación de aplicaciones públicas que MITRE ATT\&CK cataloga como T1190
 (MITRE Corporation, 2026); el tiempo que tarda una organización en remediar es, por lo tanto,
 una medida de su exposición.
 
@@ -41,8 +41,7 @@ El modelo tiene dos virtudes para este estudio. La solución de referencia $V(t)
 es conocida, así que el error del método se puede medir. Y la ecuación en diferencias que
 produce Euler sobre él, $V_{n+1} = (1 - hk) V_n$, es una sucesión geométrica cuyo comportamiento
 se puede analizar por completo, lo que permite anticipar con exactitud cuándo la simulación
-tiene sentido y cuándo no. Las dos preguntas del trabajo, la numérica y la aplicada, se
-responden sobre el mismo objeto.
+tiene sentido y cuándo no.
 
 El objetivo general es evaluar la precisión, el costo y la estabilidad de los métodos de Euler y
 de Euler mejorado sobre ecuaciones diferenciales de primer orden con solución de referencia
@@ -80,7 +79,7 @@ tres experimentos, los criterios de análisis, las decisiones que la consigna de
 ubicación del repositorio. La sección \ref{sec:resultados} presenta las mediciones agrupadas por
 fenómeno: la verificación, la relación entre error y paso, la comparación de métodos, el efecto
 de $k$, la estabilidad del modelo discreto y el modelo con $\lambda$. La sección
-\ref{sec:discusion} interpreta esas mediciones a la luz de la teoría, responde las preguntas que
+\ref{sec:discusion} interpreta esas mediciones con el marco teórico, responde las preguntas que
 plantea cada fenómeno, conecta el modelo con la gestión de vulnerabilidades y enumera sus
 limitaciones. La sección \ref{sec:conclusiones} sintetiza las respuestas a los objetivos y señala
 líneas de trabajo posteriores.
