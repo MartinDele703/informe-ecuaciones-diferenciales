@@ -18,7 +18,7 @@ Cálculo Aplicado (UCU, 2026-2), en LaTeX, más el código Python que genera sus
 Meta: nota máxima según la rúbrica. Es el segundo trabajo del curso; el proceso completo se
 hereda de `../informe-sumatorias`.
 
-## 2. Estado: informe terminado, corregido y pusheado; solo falta entregar el PDF
+## 2. Estado: informe terminado y pusheado; falta entregar y rehacer la versión Word
 
 Lo que hay:
 - **Código terminado y reproducible.** `python src/main.py` corre completo, imprime 34 líneas,
@@ -46,7 +46,60 @@ páginas, 0 cajas desbordadas, 0 referencias indefinidas, 0 CR sueltos) y se reg
 `\Urlmuskip=0mu plus 1mu` en `main.tex` porque el cambio de fechas de `216d240` había dejado
 una caja desbordada de 5 pt en la entrada de CVE de la bibliografía.
 
-Lo que falta: entregar el PDF del Escritorio y marcar el último ítem de `docs/ENTREGA.md`.
+Entregables armados en el Escritorio (`C:\Users\marti\OneDrive\Escritorio\`), fuera del repo:
+`Informe_Simulacion_numerica_Chouhy_Rial.pdf` (el informe), `informe-ecuaciones-diferenciales.zip`
+(`git archive` del commit `9dd2cae` más `informe/main.pdf`), `RESUMEN_CAMBIOS.md` (cambios y
+verificaciones para el compañero) y `Informe_Simulacion_numerica_Chouhy_Rial.docx` (versión Word,
+**rechazada por el usuario**, ver §3f).
+
+Lo que falta: (1) rehacer la versión Word para que se vea como el PDF (§3f); (2) entregar el PDF
+y marcar el último ítem de `docs/ENTREGA.md`.
+
+## 3f. Versión Word editable: lo que se hizo y por qué hay que rehacerla
+
+El usuario pidió "el PDF en versión Word editable". Se generó un `.docx` con **pandoc 3.9 desde las
+fuentes LaTeX** (no desde el PDF) y el usuario lo rechazó: "quedó totalmente distinto al informe
+en PDF, tiene un diseño muy alejado; yo quiero poder editar en Word el PDF". Lo que quiere es un
+Word que **se vea como el PDF** (misma tipografía Latin Modern, portada en página aparte,
+márgenes de 2.5 cm en A4 a 11 pt, encabezados numerados en serif, tablas con reglas finas tipo
+booktabs, pies "Figura N:" en texto normal, 25 páginas o cerca) y que siga siendo editable.
+
+Lo que ya funciona del enfoque pandoc (reutilizable si se elige la opción B):
+- Script `convertir_word.py` (copiado a `%LOCALAPPDATA%\Temp\claude-handoff\C--Repos-FACULTAD-6to-Sem--2026-2--Calculo-Aplicado-informe-ecuaciones-diferenciales.convertir_word.py`;
+  uso: `python convertir_word.py <repo> <scratchpad>`, necesita `<scratchpad>/tex/main.aux` de una
+  compilación `tectonic --keep-intermediates -o <scratchpad>/tex informe/main.tex`). Copia las
+  secciones, renderiza las figuras a PNG 200 dpi con pymupdf, resuelve `\ref`/`\eqref` con los
+  números del `.aux`, numera pies ("Figura N: ", "Tabla N: "), agrega "(N)" a las ecuaciones,
+  desarma la `list` de la bibliografía y corre pandoc con `--toc --number-sections
+  -M toc-title=Índice`; después pone sangría francesa APA con python-docx. Resultado: ecuaciones
+  OMML nativas (32 en bloque, 925 en línea), 7 figuras, 4 tablas reales, referencias resueltas,
+  sin warnings. Lo que falla es solo el **diseño**: estilos por defecto de pandoc (Calibri/Aptos,
+  encabezados azules, portada no separada, tablas sin reglas), 32 páginas.
+- Script `render_word.ps1` (misma carpeta, mismo prefijo): abre el `.docx` con Word por COM,
+  actualiza campos e índice y exporta a PDF para revisarlo con pymupdf. Word 16 está instalado y
+  responde por COM. **No hay LibreOffice ni `pdftoppm`** en esta máquina.
+- Latin Modern **no está instalada** como fuente de Windows (`C:\Windows\Fonts` no tiene
+  `lmroman*`). Hace falta instalarla (OTF de GUST, o sacarla del caché de Tectonic) para que Word
+  la muestre; si no, usar Cambria o Times New Roman como sustituto y decirlo.
+
+Opciones para la próxima sesión, en orden de prueba sugerido:
+- **A. Importar el PDF con Word** (`Documents.Open` sobre el `.pdf` por COM y `SaveAs2` a
+  `wdFormatXMLDocument = 12`): Word reconstruye el diseño con bastante fidelidad (portada, márgenes,
+  tablas con líneas, numeración) y suele ser lo más parecido al PDF. Riesgos: las fórmulas quedan
+  como texto con símbolos, no como ecuaciones; sustituye la fuente; las figuras vectoriales pueden
+  quedar como dibujos. Es un comando: probarlo primero, exportar a PDF con `render_word.ps1` y
+  mostrarle páginas al usuario antes de seguir.
+- **B. pandoc con `--reference-doc`** ajustado para imitar el PDF: un `reference.docx` con Latin
+  Modern (o Cambria) 11 pt, A4, márgenes 2.5 cm, Heading 1/2 en negrita serif negra, Title grande
+  centrado, Caption en texto normal, estilo Table con reglas superior, media e inferior; más un
+  `\newpage` después de la portada y del índice, y la portada armada como párrafos centrados en
+  vez de metadatos. Mantiene las ecuaciones editables. Más trabajo, pero el resultado es un Word
+  "limpio".
+- **C.** Acrobat o un conversor en línea: no hay Acrobat en la máquina y subir el PDF a un
+  servicio externo requiere el visto bueno del usuario.
+
+Sea cual sea la opción, el `.docx` final va al Escritorio con el nombre de entrega
+(`Informe_Simulacion_numerica_Chouhy_Rial.docx`, pisando el rechazado) y **no** al repo ni al ZIP.
 
 ## 3. Correcciones acordadas en la sesión 4 (aplicadas en la sesión 5)
 
@@ -146,12 +199,20 @@ push. Recién después entregar y marcar el último ítem de `docs/ENTREGA.md`.
   "cabe destacar", "en este sentido", "sin embargo", "demuestra", "De León"): ninguno.
 - Después del cambio de fechas: recompilado, verificador sin hallazgos, PDF regenerado y copiado
   al Escritorio.
+- Sesión 5, después de las cuatro correcciones: `main.py` completo con árbol limpio, verificador
+  `--todo` sin hallazgos, Tectonic con log 25 páginas / 0 cajas / 0 indefinidas, 0 CR sueltos,
+  `cantidad_de_pasos` probada a mano (10/0.1, 10/0.01, 30/3, 20/0.1, 3/0.3 pasan; 10/3 y 1/0.3
+  lanzan `ValueError`), patrones prohibidos en el PDF a cero, páginas tocadas revisadas a ojo.
+- Word (rechazado por diseño, no por contenido): 32 páginas, pies de las 7 figuras y 4 tablas
+  presentes, sin "??", cantidad de palabras equivalente al PDF.
 
 ## 5. Próximos pasos recomendados, en orden
 
-1. Entregar `C:\Users\marti\OneDrive\Escritorio\Informe_Simulacion_numerica_Chouhy_Rial.pdf` y
+1. Rehacer la versión Word (§3f): probar primero la opción A (importar el PDF con Word por COM),
+   renderizar con `render_word.ps1` y mostrar páginas; si no convence, opción B.
+2. Entregar `C:\Users\marti\OneDrive\Escritorio\Informe_Simulacion_numerica_Chouhy_Rial.pdf` y
    marcar el último ítem de `docs/ENTREGA.md`.
-2. Decidir `README.md` y los objetos sueltos (§3e), sin apuro.
+3. Decidir `README.md` y los objetos sueltos (§3e), sin apuro.
 
 ## 6. Preferencias y restricciones
 
@@ -162,3 +223,11 @@ push. Recién después entregar y marcar el último ítem de `docs/ENTREGA.md`.
   visibilidad) solo con el visto bueno explícito del usuario en la sesión.
 - Antes de corregir algo que pide un revisor externo, verificarlo contra el código y los `.tex`
   y dar la opinión primero; el usuario decide qué se aplica.
+- Cualquier versión Word del informe tiene que verse como el PDF (tipografía, portada, tablas,
+  numeración), no solo tener el mismo contenido. Mostrar páginas renderizadas antes de darla por
+  buena.
+- Archivos de sesión 5 tocados en el repo: `src/experimento3_vulnerabilidades.py`,
+  `src/metodos.py`, `informe/main.tex`, `informe/tablas/exp3-valores.tex`,
+  `informe/secciones/03-metodologia.tex`, `04-resultados.tex`, `05-discusion.tex`,
+  `06-conclusiones.tex`, los snapshots de `.claude/hooks/humanizado/` de esas cuatro secciones y
+  este handoff. Todo commiteado y pusheado.
