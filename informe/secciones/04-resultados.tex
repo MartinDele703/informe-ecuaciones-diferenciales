@@ -2,13 +2,228 @@
 \label{sec:resultados}
 % Datos, figuras y tablas SIN interpretación. Organizado por fenómeno, no por actividad de la
 % consigna. Toda figura citada por número; pies de figura autocontenidos; títulos de tabla encima.
-% Subsecciones previstas (ajustar cuando el código esté):
-%   - Verificación del método en casos con solución de referencia (crecimiento lineal y
-%     decrecimiento exponencial).
-%   - Error, tamaño del paso y número de pasos (figura E_n vs t, tabla por h).
-%   - Euler contra Euler mejorado (tabla de seis filas, figura log-log del error final vs h).
-%   - Remediación de vulnerabilidades: efecto de k (organizaciones A, B, C; tabla en t = 5, 10, 15).
-%   - Estabilidad del modelo discreto (figura con hk > 1).
-%   - Aparición de nuevas vulnerabilidades (figura por λ con el equilibrio λ/k; tabla).
 
-[PENDIENTE]
+Los resultados se presentan por fenómeno: la verificación del método en los dos casos con
+solución de referencia, la relación entre el error y el tamaño del paso, la comparación entre
+Euler y Euler mejorado, el efecto de $k$ en el modelo de remediación, la estabilidad del modelo
+discreto y el modelo con aparición de nuevas vulnerabilidades. Todas las figuras y tablas las
+genera el código descrito en la sección \ref{sec:metodologia}.
+
+\subsection{Verificación en casos con solución de referencia}
+\label{subsec:res-verificacion}
+
+En el caso de crecimiento lineal, $x' = 1$ con $x(0) = 0$, las tres aproximaciones de Euler
+coinciden con la referencia $x(t) = t$ en todos los nodos. En la Figura \ref{fig:exp1-lineal} las
+curvas de $h = 1$, $h = 0.5$ y $h = 0.1$ se superponen con la recta de referencia y entre sí; el
+error final es nulo para $h = 1$ y $h = 0.5$, y con $h = 0.1$ queda en el orden del redondeo de
+la aritmética de doble precisión.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{exp1-lineal.pdf}
+  \caption{Método de Euler aplicado a $x' = 1$, $x(0) = 0$, sobre $0 \le t \le 10$, con
+  $h = 1$, $h = 0.5$ y $h = 0.1$. La línea negra continua es la solución de referencia
+  $x(t) = t$. Las tres aproximaciones coinciden con ella en todos los nodos y por eso se
+  superponen; los marcadores señalan los nodos de $h = 1$ y $h = 0.5$.}
+  \label{fig:exp1-lineal}
+\end{figure}
+
+En el caso de decrecimiento exponencial, $x' = -x$ con $x(0) = 1$, las aproximaciones se
+separan de la referencia $x(t) = e^{-t}$ según el paso. La Figura \ref{fig:exp1-exponencial}
+muestra que con $h = 1$ la aproximación vale cero desde el primer paso y se queda en cero el resto
+del intervalo. Con $h = 0.5$ la curva queda por debajo de la referencia en todo el intervalo y la
+diferencia es visible a simple vista hasta $t \approx 4$. Con $h = 0.1$ y $h = 0.01$ las curvas
+no se distinguen de la referencia a la escala principal de la figura; el recuadro de detalle
+sobre $7 \le t \le 10$ las separa, y ahí la de $h = 0.1$ queda por debajo de la referencia y la de
+$h = 0.01$ pegada a ella. Los errores de estas mismas corridas en $t = 10$ figuran en la Tabla
+\ref{tab:exp2-error-por-h}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{exp1-exponencial.pdf}
+  \caption{Método de Euler aplicado a $x' = -x$, $x(0) = 1$, sobre $0 \le t \le 10$, con
+  $h = 1$, $h = 0.5$, $h = 0.1$ y $h = 0.01$. La línea negra continua es la solución de
+  referencia $x(t) = e^{-t}$. El recuadro amplía el tramo $7 \le t \le 10$, donde las curvas de
+  los pasos chicos se separan de la referencia; su eje vertical está en milésimas.}
+  \label{fig:exp1-exponencial}
+\end{figure}
+
+\subsection{Error, tamaño del paso y número de pasos}
+\label{subsec:res-error-paso}
+
+La Figura \ref{fig:exp2-error-vs-t} muestra el error absoluto $E_n = |x(t_n) - x_n|$ de Euler
+sobre $x' = -x$ en función de $t$ para cinco valores de $h$. Las cinco curvas tienen la misma
+forma: el error crece desde cero en $t = 0$, alcanza su máximo cerca de $t = 1$ y después decrece
+de manera aproximadamente exponencial. Las curvas están ordenadas por $h$ en casi todo el
+intervalo; al final, las de $h = 1$ y $h = 0.5$ se juntan.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{exp2-error-vs-t.pdf}
+  \caption{Error absoluto $E_n = |x(t_n) - x_n|$ del método de Euler sobre $x' = -x$,
+  $x(0) = 1$, en función de $t$, con $h \in \{1,\, 0.5,\, 0.1,\, 0.05,\, 0.01\}$ y eje vertical
+  en escala logarítmica. El punto $t = 0$, donde el error es nulo, no se dibuja.}
+  \label{fig:exp2-error-vs-t}
+\end{figure}
+
+La Tabla \ref{tab:exp2-error-por-h} resume las cinco corridas. El número de pasos crece como
+$1/h$: de 10 pasos con $h = 1$ a 1\,000 con $h = 0.01$. El error máximo baja de $0.368$ con
+$h = 1$ a $0.0192$ con $h = 0.1$ y a $0.00185$ con $h = 0.01$: cada vez que $h$ se divide por
+diez, el error máximo se divide por un factor cercano a diez. El error final en $t = 10$ se
+comporta de otra manera: entre $h = 1$ y $h = 0.5$ casi no cambia ($4.54 \times 10^{-5}$ contra
+$4.44 \times 10^{-5}$), y recién con $h = 0.01$ baja un orden de magnitud respecto de $h = 1$.
+Con $h = 1$ la aproximación vale exactamente cero en $t = 10$, así que su error final coincide
+con el valor de la referencia $e^{-10}$.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Error del método de Euler sobre $x' = -x$, $x(0) = 1$, $0 \le t \le 10$, según el
+  tamaño del paso $h$. Se informan el número de pasos, el error absoluto final $E_N$ en
+  $t = 10$ y el error absoluto máximo sobre todo el intervalo. Las unidades son las de $x$,
+  adimensionales.}
+  \label{tab:exp2-error-por-h}
+  \input{tablas/exp2-error-por-h}
+\end{table}
+
+\subsection{Euler contra Euler mejorado}
+\label{subsec:res-metodos}
+
+La Tabla \ref{tab:exp2-metodos} compara los dos métodos sobre la misma ecuación para
+$h \in \{1,\, 0.5,\, 0.1\}$. Con $h = 1$ el error final de Euler mejorado es mayor que el de
+Euler ($9.31 \times 10^{-4}$ contra $4.54 \times 10^{-5}$), aunque su valor final
+($9.77 \times 10^{-4}$) es distinto de cero mientras que el de Euler es exactamente cero. Con
+$h = 0.5$ los errores finales de los dos métodos son del mismo orden, y con $h = 0.1$ el de Euler
+mejorado es unas veinte veces menor que el de Euler ($8.23 \times 10^{-7}$ contra
+$1.88 \times 10^{-5}$). El número de pasos es el mismo para los dos métodos a igual $h$; Euler
+mejorado evalúa $f$ dos veces por paso, así que realiza el doble de evaluaciones.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Euler y Euler mejorado sobre $x' = -x$, $x(0) = 1$, $0 \le t \le 10$, para tres
+  tamaños de paso. Se informan el valor final $x_N$ en $t = 10$, el error absoluto final $E_N$ y
+  el número de pasos. El valor de referencia en $t = 10$ es $e^{-10} \approx 4.54 \times 10^{-5}$.}
+  \label{tab:exp2-metodos}
+  \input{tablas/exp2-metodos}
+\end{table}
+
+La Figura \ref{fig:exp2-orden} grafica el error máximo de cada método contra $h$ en escala
+doblemente logarítmica, para los cinco valores de $h$ del experimento. Los puntos de Euler se
+alinean con la recta guía de pendiente 1 y los de Euler mejorado con la de pendiente 2 en todo
+el rango; el único apartamiento visible es en $h = 1$, donde los dos métodos quedan por encima
+de su guía. Entre $h = 0.1$ y $h = 0.01$ el error máximo de Euler se divide por un factor
+cercano a diez y el de Euler mejorado por uno cercano a cien. Con $h = 1$ el error máximo de
+Euler mejorado ya es menor que el de Euler, a diferencia de lo que ocurre con el error final de la
+Tabla \ref{tab:exp2-metodos}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{exp2-orden.pdf}
+  \caption{Error absoluto máximo $\protect\max_n E_n$ de Euler y de Euler mejorado sobre $x' = -x$,
+  $x(0) = 1$, $0 \le t \le 10$, en función del tamaño del paso $h$, en escala doblemente
+  logarítmica. Las líneas punteadas son rectas guía de pendiente 1 y pendiente 2, ancladas en el
+  punto de $h = 0.01$ de cada método.}
+  \label{fig:exp2-orden}
+\end{figure}
+
+\subsection{Remediación de vulnerabilidades: efecto de \texorpdfstring{$k$}{k}}
+\label{subsec:res-organizaciones}
+
+La Figura \ref{fig:exp3-organizaciones} muestra la cantidad de equipos vulnerables $V(t)$ en las
+organizaciones A, B y C, con $k = 0.1$, $0.3$ y $0.7$ respectivamente, para la referencia
+$V(t) = V_0 e^{-kt}$ y para Euler con tres pasos. Las tres curvas de referencia parten de
+$V_0 = 1000$ y decrecen; a mayor $k$, más rápido. En la organización A quedan 223 equipos
+vulnerables en $t = 15$; en la B, 11; en la C, menos de uno desde $t = 10$ (Tabla
+\ref{tab:exp3-valores}). En los tres paneles las aproximaciones de Euler quedan por debajo de la
+referencia, y la separación crece con $h$ y con $k$: en la organización A las cuatro curvas casi
+se superponen, mientras que en la C la de $h = 1$ llega a cero en pocos pasos.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{exp3-organizaciones.pdf}
+  \caption{Equipos vulnerables $V(t)$ según el modelo $V' = -kV$ con $V(0) = 1000$ para las
+  organizaciones A ($k = 0.1$), B ($k = 0.3$) y C ($k = 0.7$), sobre $0 \le t \le 20$ días. En
+  cada panel, la línea negra continua es la referencia $V(t) = V_0 e^{-kt}$ y las otras tres son
+  las aproximaciones de Euler con $h = 1$, $h = 0.5$ y $h = 0.1$.}
+  \label{fig:exp3-organizaciones}
+\end{figure}
+
+La Tabla \ref{tab:exp3-valores} da los valores en $t = 5$, $10$ y $15$. Con $h = 1$ el error es
+de 16 a 19 equipos en la organización A, de 55 equipos en $t = 5$ en la B y de 28 equipos en
+$t = 5$ en la C, donde la aproximación da 2.4 equipos contra 30.2 de referencia. En las
+organizaciones A y B, al pasar de $h = 1$ a $h = 0.5$ el error se reduce aproximadamente a la
+mitad, y con $h = 0.1$ queda cerca de la décima parte del de $h = 1$: en la A baja de 16.0 a 1.5
+equipos en $t = 5$ y en la B de 55.1 a 5.1. En la organización C la reducción es menor en
+$t = 5$ (de 27.8 a 16.7 y a 3.6 equipos) y en $t = 10$ y $t = 15$ los errores ya son de menos
+de un equipo con cualquier $h$. El instante en que el error es mayor depende de $k$:
+en la organización A el error de $h = 1$ es mayor en $t = 10$, en la B y en la C es mayor en
+$t = 5$.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Equipos vulnerables en $t = 5$, $10$ y $15$ días para las organizaciones A, B y C
+  ($V_0 = 1000$). Para cada organización, la fila ``ref.'' da el valor de referencia
+  $V_0 e^{-kt}$ y las tres siguientes, el valor aproximado por Euler con $h = 1$, $0.5$ y $0.1$
+  junto con el error absoluto $E(t) = |V(t) - V_n|$. Todos los valores están en equipos.}
+  \label{tab:exp3-valores}
+  \input{tablas/exp3-valores}
+\end{table}
+
+\subsection{Estabilidad del modelo discreto}
+\label{subsec:res-estabilidad}
+
+La Figura \ref{fig:exp3-estabilidad} muestra la sucesión $V_{n+1} = (1 - hk)\,V_n$ para la
+organización C ($k = 0.7$, $V_0 = 1000$) con $h = 1$, $h = 2$ y $h = 3$, es decir $hk = 0.7$,
+$1.4$ y $2.1$. Con $hk = 0.7$ la sucesión decrece de manera monótona, se mantiene positiva y
+queda por debajo de la referencia en todos los nodos. Con $hk = 1.4$ la sucesión cambia de signo
+en cada paso: vale $-400$ en $t = 2$, $160$ en $t = 4$ y $-64$ en $t = 6$, y la amplitud de la
+oscilación se reduce en cada paso hasta que la sucesión queda indistinguible de cero. Con
+$hk = 2.1$ la sucesión también alterna el signo, pero la amplitud crece: vale $-1100$ en
+$t = 3$, $1210$ en $t = 6$ y supera en valor absoluto los $2500$ equipos en $t = 30$. En los dos
+casos con $hk > 1$ la sucesión toma valores negativos desde el primer paso.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{exp3-estabilidad.pdf}
+  \caption{Sucesión $V_{n+1} = (1 - hk)\,V_n$ del modelo discreto con $k = 0.7$ y
+  $V_0 = 1000$ para tres tamaños de paso. Panel izquierdo: $h = 1$ ($hk = 0.7$) y $h = 2$
+  ($hk = 1.4$), recortado a $0 \le t \le 15$ porque de ahí en adelante ambas sucesiones valen
+  menos de un equipo. Panel derecho: $h = 3$ ($hk = 2.1$) sobre $0 \le t \le 30$. En ambos
+  paneles la línea negra continua es la referencia $V_0 e^{-kt}$, la línea gris horizontal marca
+  $V = 0$ y los marcadores son los valores de la sucesión en cada nodo.}
+  \label{fig:exp3-estabilidad}
+\end{figure}
+
+\subsection{Aparición de nuevas vulnerabilidades}
+\label{subsec:res-lambda}
+
+La Figura \ref{fig:exp3-lambda} muestra la simulación de $V' = \lambda - kV$ con $V_0 = 1000$,
+$k = 0.3$ y $h = 0.1$ para $\lambda \in \{0,\, 50,\, 100,\, 200\}$. Las cuatro curvas parten de
+$1000$ y decrecen de manera monótona; ninguna cruza su valor de equilibrio $\lambda/k$, marcado
+con una línea punteada. La curva de $\lambda = 0$ es la misma que la de la organización B con
+$h = 0.1$ de la Figura \ref{fig:exp3-organizaciones}. Cuanto mayor es $\lambda$, más alto es el
+nivel al que tiende la curva y antes se aplana: la de $\lambda = 200$ está a menos de 50 equipos
+de su equilibrio desde $t \approx 6$, mientras que la de $\lambda = 0$ tarda hasta $t \approx 10$
+en bajar de 50 equipos.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{exp3-lambda.pdf}
+  \caption{Equipos vulnerables $V(t)$ según el modelo $V' = \lambda - kV$ con $V(0) = 1000$,
+  $k = 0.3$ y tasa de aparición de nuevas vulnerabilidades $\lambda \in \{0,\, 50,\, 100,\,
+  200\}$ equipos por día, aproximado por Euler con $h = 0.1$ sobre $0 \le t \le 20$ días. Cada
+  línea punteada horizontal marca el equilibrio $\lambda/k$ del mismo color que su curva.}
+  \label{fig:exp3-lambda}
+\end{figure}
+
+La Tabla \ref{tab:exp3-equilibrio} compara el valor simulado en $t = 20$ con el equilibrio. Las
+cuatro curvas terminan por encima de su equilibrio, y la diferencia es menor cuanto mayor es
+$\lambda$: 2.3 equipos con $\lambda = 0$ y 0.8 con $\lambda = 200$.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Modelo $V' = \lambda - kV$ con $V_0 = 1000$, $k = 0.3$ y $h = 0.1$. Para cada
+  tasa $\lambda$ (equipos por día) se informan el equilibrio $\lambda/k$, el valor simulado
+  $V(20)$ al final del intervalo y la diferencia entre ambos, todo en equipos.}
+  \label{tab:exp3-equilibrio}
+  \input{tablas/exp3-equilibrio}
+\end{table}
