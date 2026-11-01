@@ -6,7 +6,9 @@ figuras y tablas. Es el segundo trabajo del curso. El primero, `../informe-sumat
 terminado y revisado, y este repo hereda de él todo el proceso: estructura, hooks, skills,
 verificador y rúbrica. Lo que cambia es la consigna.
 
-Autores: Martín De León, Manuel Chouhy, Joaquín Riál. Fecha de entrega: pendiente.
+Autores del repo: Martín De León, Manuel Chouhy, Joaquín Riál. Fecha de entrega: 1 de noviembre
+de 2026. En la portada de esta entrega figuran solo Manuel Chouhy y Joaquín Riál, por decisión
+de Martín; no volver a agregarlo.
 
 Respondé siempre en español rioplatense, con ortografía y tildes correctas. Los identificadores de
 código quedan en inglés o español según estén.

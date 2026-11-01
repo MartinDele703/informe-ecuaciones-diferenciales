@@ -108,7 +108,7 @@ def f3_portada() -> None:
     bloque = main[main.find("titlepage"):main.find("end{titlepage}")]
     requisitos = {
         "universidad": "Universidad",
-        "autores": "De León",
+        "autores": "Chouhy",
         "curso": "Cálculo Aplicado",
         "docentes": "Docentes:",
     }
