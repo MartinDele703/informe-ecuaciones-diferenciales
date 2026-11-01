@@ -1,0 +1,234 @@
+Los dos casos de verificación se comportan como predice la sección \ref{subsec:euler}. Con
+$x' = 1$ la pendiente no depende de $x$, así que la recta tangente coincide con la solución y la
+recurrencia \eqref{eq:euler} reproduce $x(t) = t$ sin error para cualquier $h$. Por eso en la
+Figura \ref{fig:exp1-lineal} las tres aproximaciones se superponen con la referencia, y
+disminuir $h$ no cambia nada salvo el número de nodos. Ese caso no mide la precisión del
+método; confirma que la implementación hace lo que dice la fórmula.
+Con $x' = -x$ la pendiente cambia dentro de cada intervalo y el método se separa de la
+referencia. Lo que ocurre con $h = 1$ es el caso $hk = 1$ de la sección
+paso. El error no proviene de acumular errores chicos: un paso del tamaño del tiempo
+característico $1/k$ reemplaza toda la curva por una sola recta que llega al eje. Con $h = 0.5$ la razón es $0.5$ contra $e^{-0.5} \approx 0.61$ de la referencia, y la
+curva queda por debajo en todo el intervalo, como anticipa la desigualdad
+$1 - hk < e^{-hk}$ de \eqref{eq:referencia-discreta}. Con $h = 0.1$ y $h = 0.01$ las razones son
+$0.9$ y $0.99$, contra $0.905$ y $0.990$ de la referencia, y las curvas se confunden con ella a
+la escala de la Figura \ref{fig:exp1-exponencial}.
+Al disminuir $h$ el error baja y el número de pasos sube, cada uno a un ritmo que se puede
+medir. La Tabla \ref{tab:exp2-error-por-h} muestra que el error máximo se divide por un
+factor cercano a diez cada vez que $h$ se divide por diez, que es la firma de un método de
+orden~1 según \eqref{eq:orden}; entre $h = 0.1$ y $h = 0.05$ el factor es $2.04$, muy cerca del
+$2$ teórico, mientras que entre $h = 1$ y $h = 0.5$ es $3.1$, porque con $h = 1$ el método está
+lejos del régimen en que vale la cota. El número de pasos crece como $1/h$, de 10 a 1\,000. El
+error final, en cambio, es un indicador engañoso en este problema: con $h = 1$ la aproximación
+vale exactamente cero en $t = 10$ y su error final es el valor de la referencia, $e^{-10}$, que
+es pequeño por sí mismo. Un lector que mirara solo $E_N$ concluiría que $h = 1$ y $h = 0.5$ son
+casi igual de buenos, cuando el error máximo de uno es el triple del otro. La Figura
+cerca de $t = 1$, donde la solución cambia más rápido, y después decae junto con la solución:
+la diferencia entre las razones $1 - h$ y $e^{-h}$ de \eqref{eq:referencia-discreta} se aplica
+en cada paso a un valor cada vez más chico.
+Existe un compromiso entre precisión y costo, y es lineal en los dos sentidos: ganar un dígito
+de precisión cuesta diez veces más pasos. Un paso más pequeño no es siempre conveniente. La
+sección \ref{subsec:error-orden} recuerda que, además del error de truncamiento, cada paso
+agrega un error de redondeo, y que la suma de los dos tiene un término proporcional a
+$\delta/h$ que crece cuando $h$ baja (Burden et al., 2016). En el rango ensayado ese término no
+se observa: con $h = 0.01$ el error máximo es $1.85 \times 10^{-3}$, muchos órdenes de magnitud
+por encima del redondeo acumulado en 1\,000 pasos de doble precisión. Pero el fenómeno existe
+para $h$ del orden de la raíz cuadrada del épsilon de máquina, y antes de llegar ahí aparece el
+costo en tiempo: pasar de $h = 0.1$ a $h = 0.01$ multiplica por diez las evaluaciones de $f$
+para ganar un dígito. En un problema cuya $f$ sea cara de evaluar, o que haya que resolver
+muchas veces, ese dígito puede no justificar el costo.
+Euler mejorado tiene menor error que Euler, y la ventaja crece a medida que $h$ disminuye. En la
+Tabla \ref{tab:exp2-metodos} los errores finales de los dos métodos son del mismo orden con
+$h = 0.5$ y difieren en un factor de unas veinte con $h = 0.1$. En la Figura
+máximo de Euler baja diez veces entre $h = 0.1$ y $h = 0.01$ y el de Euler mejorado baja cien
+veces, de acuerdo con \eqref{eq:orden} para $p = 1$ y $p = 2$. El resultado depende de $h$ en el
+sentido de que la razón entre los dos errores es, aproximadamente, proporcional a $h$: con pasos
+grandes los métodos son parecidos y con pasos chicos el de orden~2 se despega.
+El caso $h = 1$ merece una aclaración, porque ahí la Tabla \ref{tab:exp2-metodos} muestra a
+Euler mejorado con un error final mayor que Euler. No es que el método sea peor con ese paso:
+su error máximo ($0.13$) es menos de la mitad del de Euler ($0.37$) en la Figura
+cero queda a $e^{-10}$ de la referencia, mientras que Euler mejorado avanza con razón $0.5$ por
+paso, y $0.5^{10} \approx 9.8 \times 10^{-4}$ está más lejos de $e^{-10}$ que el cero. El error
+final de Euler con $h = 1$ es una coincidencia del punto en que termina el intervalo, no un
+mérito del método.
+Euler mejorado requiere más operaciones por iteración: evalúa $f$ dos veces por paso según
+costosa, así que su costo por paso es el doble. La comparación justa es a igual número de
+evaluaciones, y ahí Euler mejorado gana con amplitud: con $h = 0.1$ hace 200 evaluaciones y
+termina con error final $8.23 \times 10^{-7}$, mientras que Euler con $h = 0.01$ hace 1\,000 y
+termina con $2.23 \times 10^{-6}$ (Tablas \ref{tab:exp2-error-por-h} y \ref{tab:exp2-metodos}):
+cinco veces menos trabajo y un error casi tres veces menor.
+Eso no hace que el método más preciso sea el más conveniente en cualquier situación. Hay tres
+casos en que no lo es. Si $f$ es constante o casi constante, Euler ya es exacto o casi, y la
+segunda evaluación no aporta nada. Si el error dominante no es el del método sino el del modelo,
+como ocurre con el de remediación, cuyos supuestos se discuten en la sección
+incertidumbre de $k$. Y si lo que importa es la estabilidad con pasos grandes y no la precisión,
+el orden del método no es el criterio: los dos esquemas tienen condiciones de estabilidad
+propias y ninguno escapa a la necesidad de elegir $h$ según $k$. En el modelo con $f = -kV$,
+Euler mejorado con $h = 1/k$ avanza con razón $0.5$ y no cae a cero en un paso, lo que lo hace
+más tolerante que Euler a pasos del orden de $1/k$; pero esa tolerancia cuesta una evaluación
+más por paso y tiene su propio límite de estabilidad.
+El parámetro $k$ representa la fracción de los equipos todavía vulnerables que la organización
+corrige por unidad de tiempo: con $k = 0.1$ se corrige, en promedio, un décimo de lo pendiente
+cada día. Su inversa $1/k$ es el tiempo característico del proceso, 10 días para la organización
+A, 3.3 para la B y 1.4 para la C, y $\ln 2 / k$ es el tiempo en que la cantidad se reduce a la
+mitad: 6.9, 2.3 y 1.0 días. La organización C es la que reduce más rápido los sistemas
+vulnerables. En la Tabla \ref{tab:exp3-valores} le quedan menos de un equipo en $t = 10$ y
+$t = 15$, cuando la A todavía tiene 368 y 223 equipos vulnerables en esos mismos instantes.
+Cuando $k$ aumenta, la gráfica de $V(t)$ parte del mismo $V_0$ pero cae con mayor pendiente
+inicial, porque $V'(0) = -k V_0$, y se aplana antes: en la Figura \ref{fig:exp3-organizaciones}
+la curva de la organización A todavía está bajando de manera visible en $t = 20$, mientras que la
+de la C es indistinguible de cero desde $t \approx 8$. La forma es la misma en las tres, una
+exponencial decreciente; lo que cambia es la escala de tiempo, que se contrae en proporción a
+$1/k$.
+Interpretar un $k$ elevado como mayor capacidad de respuesta es razonable con dos salvedades. La
+primera es que $k$ mide una proporción, no una cantidad absoluta: una organización que corrige
+el 70\,\% de lo pendiente por día sobre 100 equipos hace menos trabajo que otra que corrige el
+10\,\% sobre 10\,000, y el modelo no distingue entre un equipo de respuesta grande y un parque
+chico. La segunda es que $k$ resume un proceso completo, no una sola habilidad: la sección
+probar, instalar y verificar, y una demora en cualquiera de ellas baja el $k$ efectivo. Los
+factores reales que explican valores distintos de $k$ entre organizaciones son los que Souppaya
+y Scarfone (2022) identifican como causas de demora: que el proveedor haya publicado o no el
+parche, que el producto tenga soporte, que haga falta probar el parche antes de desplegarlo,
+que las ventanas de mantenimiento sean escasas, que el software dependa de otros componentes
+que también hay que actualizar, y el grado de automatización del despliegue. A eso se suman el
+tamaño y la heterogeneidad del parque, la existencia de un inventario de activos confiable y la
+cantidad de personal dedicado.
+El efecto de $k$ tiene además una consecuencia numérica. En la Tabla \ref{tab:exp3-valores} el
+error de Euler con $h = 1$ es de 16 equipos en $t = 5$ para la organización A y de 28 para la C,
+pero en términos relativos es del 3\,\% en la A y del 92\,\% en la C, donde la aproximación da
+2.4 equipos contra 30.2. La precisión depende del producto $hk$, y no de $h$ por sí solo: con
+el mismo paso, $hk$ vale $0.1$ en la A y $0.7$ en la C. Cuanto más rápido es el proceso,
+más fino tiene que ser el paso para seguirlo: con $h = 0.1$ el error relativo en $t = 5$ baja al
+$0.3$\,\% en la A y al $12$\,\% en la C.
+Cuando $hk > 1$ el modelo discreto deja de parecerse al fenómeno. La razón $1 - hk$ de
+paso, como muestra la Figura \ref{fig:exp3-estabilidad}: con $hk = 1.4$ la razón es
+$-0.4$ y la oscilación se amortigua; con $hk = 2.1$ la razón es $-1.1$ y la amplitud crece un
+10\,\% por paso, hasta superar en valor absoluto los 2\,500 equipos en $t = 30$. Los dos
+casos cumplen o violan la condición \eqref{eq:estabilidad} como predice la teoría: $hk = 1.4$
+está dentro del intervalo $0 < hk < 2$ y converge a cero, $hk = 2.1$ está fuera y diverge.
+El método produce valores negativos en cuanto $hk > 1$, y los produce desde el primer paso:
+$-400$ equipos con $hk = 1.4$ y $-1\,100$ con $hk = 2.1$.
+Una cantidad negativa de equipos vulnerables no tiene sentido. La referencia
+equipos de un conjunto finito, no puede dejar menos de cero. El valor negativo es un artefacto
+del método: con un paso mayor que $1/k$, la recta tangente del primer paso atraviesa el eje
+antes de que termine el intervalo, y el método sigue la recta en lugar de la curva. Por eso el
+criterio para que el modelo discreto tenga sentido es más exigente que la estabilidad: hace
+falta $0 < hk < 1$, es decir $h < 1/k$, para que la sucesión conserve el signo y la monotonía de
+la referencia. Para la organización C eso significa $h < 1.43$ días. Las simulaciones de la
+sección \ref{subsec:res-organizaciones} cumplen esa condición en todos los casos, con $hk$ como
+máximo $0.7$, y por eso ninguna de sus curvas oscila. La convergencia con $hk = 1.4$, aunque
+pase por valores negativos, también tiene una lectura práctica: un programa que no grafique la
+sucesión y solo mire el valor final la daría por buena, porque termina cerca de cero. Verificar
+que $hk < 1$ antes de correr es más barato que inspeccionar la salida.
+Con un flujo constante de vulnerabilidades nuevas, la cantidad de equipos vulnerables no tiende
+a cero ni crece sin límite: se estabiliza en el equilibrio $\lambda/k$ de \eqref{eq:equilibrio}.
+Las cuatro curvas de la Figura \ref{fig:exp3-lambda} parten del mismo $V_0 = 1000$ y, como
+$V_0$ está por encima de todos los equilibrios, disminuyen de manera monótona hacia su nivel
+propio; la Tabla \ref{tab:exp3-equilibrio} las muestra a menos de 2.3 equipos de él en $t = 20$.
+La diferencia residual es la que predice \eqref{eq:desvio-equilibrio}: el desvío inicial
+$V_0 - \lambda/k$ multiplicado por $(1 - hk)^{200} = 0.97^{200} \approx 2.3 \times 10^{-3}$,
+lo que da 2.3 equipos para $\lambda = 0$ y 0.8 para $\lambda = 200$, los valores de la tabla.
+Que la aproximación quede por encima del equilibrio y no lo cruce se debe a que, con $hk = 0.03$,
+la razón es positiva y la convergencia es monótona. Si $V_0$ estuviera por debajo de
+$\lambda/k$, la curva subiría hacia el equilibrio en lugar de bajar.
+La comparación entre valores de $\lambda$ muestra que el nivel de equilibrio es proporcional a
+la tasa de aparición: duplicar $\lambda$ duplica los equipos vulnerables en régimen. La
+velocidad con que se llega al régimen depende de $k$ y es independiente de $\lambda$, porque el
+desvío decae con la misma razón $1 - hk$ en las cuatro curvas. Para una organización real esto
+significa que, mientras aparezcan vulnerabilidades, existe un piso de equipos vulnerables del
+que no se baja, y que ese piso vale $\lambda/k$. Una organización con $k = 0.3$ que recibe 200
+equipos vulnerables nuevos por día convive de forma permanente con unos 667 equipos
+vulnerables, dos tercios de su parque inicial, por mucho que corrija. Para bajar el piso hay
+dos palancas: reducir $\lambda$, por ejemplo con menos software expuesto o con configuraciones
+que reduzcan el ritmo al que aparecen vulnerabilidades explotables, o aumentar $k$, es decir
+remediar más rápido. Las dos son multiplicativas: duplicar $k$ tiene el mismo efecto sobre el
+piso que reducir $\lambda$ a la mitad.
+La técnica T1190 descrita en la sección \ref{subsubsec:attack-t1190} explota una debilidad de
+un sistema expuesto a Internet para obtener el acceso inicial. Su relación con los sistemas que
+permanecen vulnerables es directa: la técnica solo funciona sobre un equipo que tenga la
+vulnerabilidad sin corregir en el momento del ataque. En términos del modelo, los equipos sobre
+los que T1190 puede actuar son, en cada instante, los $V(t)$ equipos todavía vulnerables, o la
+parte de ellos que está expuesta a Internet. La superficie de ataque, el conjunto de puntos por
+los que un atacante puede intentar entrar, incluye a esos equipos, y se achica a medida que
+$V(t)$ baja.
+Reducir el tiempo de remediación disminuye la superficie de ataque por dos vías. Con un $k$
+mayor, $V(t)$ es menor en cada instante, así que en cualquier momento hay menos equipos
+explotables. Además, cada equipo pasa menos tiempo en estado vulnerable, y ese tiempo es la
+ventana de oportunidad que Souppaya y Scarfone (2022) señalan
+como el período en que, una vez pública la vulnerabilidad, los atacantes desarrollan y usan
+exploits. El catálogo KEV de CISA (s.f.) existe para acortar esa ventana en las vulnerabilidades
+que ya se están explotando, y las mitigaciones que ATT\&CK asocia a T1190, gestión regular de
+parches y escaneo con parcheo rápido de las vulnerabilidades críticas (MITRE Corporation, 2026),
+son acciones que aumentan $k$.
+La relación entre $k$ y el proceso de remediación es la de un resumen con lo que resume. El
+tiempo característico $1/k$ es, en el modelo, el tiempo medio que un equipo permanece
+vulnerable, y cada etapa del proceso descrito en la sección
+el parche, probarlo, esperar la ventana de mantenimiento, instalarlo y verificar. Un $k$ alto
+corresponde a un proceso con pocas esperas; un $k$ bajo, a uno con muchas. La priorización de la
+sección \ref{subsubsec:priorizacion} actúa sobre $k$ de manera selectiva: en lugar de remediar todo
+más rápido, asigna el $k$ alto a las vulnerabilidades de mayor severidad CVSS, presentes en más
+activos o con explotación conocida, y acepta un $k$ bajo para el resto. El modelo con un
+solo $k$ no representa esa selectividad, y esa es una de sus limitaciones.
+El modelo $V' = -kV$ es un resumen útil del proceso y, como todo resumen, descansa en supuestos
+que no se cumplen al pie de la letra.
+Supone que todos los equipos tienen la misma probabilidad de ser parcheados en cada instante.
+En una organización real un servidor expuesto, una estación de trabajo y un dispositivo
+embebido sin soporte del proveedor no se parchean con la misma facilidad; Souppaya y Scarfone
+(2022) dedican un escenario entero a los activos que no se pueden parchear. La fracción $k$ es,
+en el mejor de los casos, un promedio sobre poblaciones muy distintas.
+Supone que $k$ es constante. En la práctica la rapidez de remediación cambia con el tiempo: hay
+campañas de parcheo que la suben durante unos días, períodos de vacaciones o de congelamiento
+de cambios que la bajan, y parches que recién están disponibles semanas después de que la
+vulnerabilidad se hace pública. Un modelo con $k(t)$ variable, o con un $k$ que depende de
+cuántos equipos quedan, sería más fiel.
+Supone que todos los equipos tienen la misma importancia, porque $V$ cuenta equipos sin pesarlos.
+Un equipo vulnerable que guarda datos de clientes no equivale a uno de prueba desconectado de
+la red. La priorización real pondera por importancia del activo, y las métricas ambientales de
+CVSS de la sección \ref{subsubsec:cve-cvss} existen para ajustar la severidad al contexto de
+cada organización.
+Supone que todas las vulnerabilidades tienen la misma severidad. CVSS las ubica entre $0.0$ y
+$10.0$, y una organización remedia antes las críticas que las bajas. El modelo mezcla en un solo
+$V$ vulnerabilidades que en la realidad tienen tasas de remediación y consecuencias distintas.
+Una extensión natural es separar $V$ por clase de severidad, cada una con su propio $k$.
+No considera ataques reales. El modelo describe solo la corrección: ningún término representa
+que un equipo vulnerable sea explotado, y un equipo comprometido no sale de $V$ por remediación
+sino por un incidente. La técnica T1190 actúa sobre la población que el modelo cuenta, pero el
+modelo no sabe que existe.
+Considera la aparición de nuevas vulnerabilidades solo en la variante con $\lambda$, y ahí la
+supone constante. En la realidad las vulnerabilidades aparecen a saltos: un ciclo mensual de
+parches del proveedor, o la publicación de una vulnerabilidad de día cero, hacen que $V$ suba de
+forma abrupta. Un $\lambda(t)$ con impulsos sería más realista que una tasa continua.
+Un modelo más realista tendría que incorporar, como mínimo, varias clases de equipos y de
+vulnerabilidades con $k_i$ y $\lambda_i$ propios. La tasa de remediación dependería de la
+prioridad y de la capacidad finita del equipo de respuesta, de modo que no se puedan corregir
+más de cierta cantidad de equipos por día. Harían falta además un término de aparición con
+saltos y un término de explotación que convierta equipos vulnerables en equipos comprometidos.
+Varias de esas extensiones no tienen solución de referencia, y ahí los métodos numéricos de este
+informe dejan de ser una verificación y pasan a ser la única forma de obtener la respuesta.
+Precisión, tamaño del paso y costo computacional están atados por el orden del método. Para
+Euler el error global es proporcional a $h$ y el costo a $1/h$: el producto del error por el
+costo es aproximadamente constante, y cada dígito de precisión se paga con diez veces más
+trabajo. Para Euler mejorado el error es proporcional a $h^2$ con el doble de costo por paso, y
+el mismo dígito se paga con unas tres veces más trabajo. Los números de las Tablas
+reproducen esas proporciones en todo el rango ensayado, salvo con $h = 1$, donde ninguno de los
+dos métodos está en régimen.
+La precisión de Euler con el paso más usado en este trabajo, $h = 0.1$, es de un error máximo
+del 2\,\% de la condición inicial en el problema de verificación y de un error relativo que va
+del $0.3$\,\% al $12$\,\% en el de remediación, según la organización. La de Euler mejorado con
+el mismo paso es del $0.07$\,\% en el problema de verificación. El número de iteraciones es el
+mismo para los dos métodos a igual $h$, y el de evaluaciones de $f$ es el doble para Euler
+mejorado. El efecto del tamaño del paso es doble: sobre la precisión, a través del orden, y
+sobre la estabilidad, a través del producto $hk$. Este segundo efecto es el que decide si la
+simulación tiene sentido: con $hk < 1$ la sucesión imita a la referencia, con $1 < hk < 2$
+converge pero oscila entre valores sin significado físico, y con $hk \ge 2$ diverge. El
+parámetro adimensional $hk$, y no $h$ solo, es la cantidad que hay que controlar al elegir el
+paso.
+La interpretación informática de los resultados es la que une las dos partes del trabajo. El
+modelo dice que, con una rapidez de remediación $k$ constante, los equipos vulnerables decaen
+de forma exponencial con tiempo característico $1/k$, y que si aparecen vulnerabilidades
+nuevas a una tasa $\lambda$ el proceso termina en un piso $\lambda/k$ en lugar de en cero. El
+método numérico dice que para simular eso hay que dar pasos más cortos que $1/k$, y que la
+precisión que se gana afinando el paso es lineal para Euler y cuadrática para Euler mejorado.
+Las fuentes técnicas dicen que $k$ es el resultado de un proceso con etapas, y no una propiedad
+fija de la organización, y que la técnica T1190 se alimenta de la población $V(t)$ que el modelo
+describe. Remediar más rápido, es decir subir $k$, baja la curva, baja el piso y acorta la
+ventana en que un atacante puede entrar.
