@@ -35,7 +35,7 @@ del intervalo. Con $h = 0.5$ la curva queda por debajo de la referencia en todo 
 diferencia es visible a simple vista hasta $t \approx 4$. Con $h = 0.1$ y $h = 0.01$ las curvas
 no se distinguen de la referencia a la escala principal de la figura; el recuadro de detalle
 sobre $7 \le t \le 10$ las separa, y ahí la de $h = 0.1$ queda por debajo de la referencia y la de
-$h = 0.01$ pegada a ella. Los errores de estas mismas corridas en $t = 10$ figuran en la Tabla
+$h = 0.01$ superpuesta a ella. Los errores de estas mismas corridas en $t = 10$ figuran en la Tabla
 \ref{tab:exp2-error-por-h}.
 
 \begin{figure}[htbp]
@@ -68,8 +68,9 @@ intervalo; al final, las de $h = 1$ y $h = 0.5$ se juntan.
 
 La Tabla \ref{tab:exp2-error-por-h} resume las cinco corridas. El número de pasos crece como
 $1/h$: de 10 pasos con $h = 1$ a 1\,000 con $h = 0.01$. El error máximo baja de $0.368$ con
-$h = 1$ a $0.0192$ con $h = 0.1$ y a $0.00185$ con $h = 0.01$: cada vez que $h$ se divide por
-diez, el error máximo se divide por un factor cercano a diez. El error final en $t = 10$ se
+$h = 1$ a $0.0192$ con $h = 0.1$ y a $0.00185$ con $h = 0.01$; entre $h = 0.1$ y $h = 0.01$ el
+error máximo se divide por un factor cercano a diez, y entre $h = 1$ y $h = 0.1$ por uno cercano
+a veinte. El error final en $t = 10$ se
 comporta de otra manera: entre $h = 1$ y $h = 0.5$ casi no cambia ($4.54 \times 10^{-5}$ contra
 $4.44 \times 10^{-5}$), y recién con $h = 0.01$ baja un orden de magnitud respecto de $h = 1$.
 Con $h = 1$ la aproximación vale exactamente cero en $t = 10$, así que su error final coincide
@@ -90,8 +91,8 @@ con el valor de la referencia $e^{-10}$.
 
 La Tabla \ref{tab:exp2-metodos} compara los dos métodos sobre la misma ecuación para
 $h \in \{1,\, 0.5,\, 0.1\}$. Con $h = 1$ el error final de Euler mejorado es mayor que el de
-Euler ($9.31 \times 10^{-4}$ contra $4.54 \times 10^{-5}$), aunque su valor final
-($9.77 \times 10^{-4}$) es distinto de cero mientras que el de Euler es exactamente cero. Con
+Euler ($9.31 \times 10^{-4}$ contra $4.54 \times 10^{-5}$); su valor final
+($9.77 \times 10^{-4}$) es distinto de cero, mientras que el de Euler es exactamente cero. Con
 $h = 0.5$ los errores finales de los dos métodos son del mismo orden, y con $h = 0.1$ el de Euler
 mejorado es unas veinte veces menor que el de Euler ($8.23 \times 10^{-7}$ contra
 $1.88 \times 10^{-5}$). El número de pasos es el mismo para los dos métodos a igual $h$; Euler
@@ -108,8 +109,8 @@ mejorado evalúa $f$ dos veces por paso, así que realiza el doble de evaluacion
 
 La Figura \ref{fig:exp2-orden} grafica el error máximo de cada método contra $h$ en escala
 doblemente logarítmica, para los cinco valores de $h$ del experimento. Los puntos de Euler se
-alinean con la recta guía de pendiente 1 y los de Euler mejorado con la de pendiente 2 en todo
-el rango; el único apartamiento visible es en $h = 1$, donde los dos métodos quedan por encima
+alinean con la recta guía de pendiente 1 y los de Euler mejorado con la de pendiente 2 en casi
+todo el rango; el único apartamiento visible es en $h = 1$, donde los dos métodos quedan por encima
 de su guía. Entre $h = 0.1$ y $h = 0.01$ el error máximo de Euler se divide por un factor
 cercano a diez y el de Euler mejorado por uno cercano a cien. Con $h = 1$ el error máximo de
 Euler mejorado ya es menor que el de Euler, a diferencia de lo que ocurre con el error final de la
@@ -134,7 +135,7 @@ $V(t) = V_0 e^{-kt}$ y para Euler con tres pasos. Las tres curvas de referencia 
 $V_0 = 1000$ y decrecen; a mayor $k$, más rápido. En la organización A quedan 223 equipos
 vulnerables en $t = 15$; en la B, 11; en la C, menos de uno desde $t = 10$ (Tabla
 \ref{tab:exp3-valores}). En los tres paneles las aproximaciones de Euler quedan por debajo de la
-referencia, y la separación crece con $h$ y con $k$: en la organización A las cuatro curvas casi
+referencia, y la separación crece con $h$. Entre organizaciones, en la A las cuatro curvas casi
 se superponen, mientras que en la C la de $h = 1$ llega a cero en pocos pasos.
 
 \begin{figure}[htbp]
@@ -154,9 +155,8 @@ organizaciones A y B, al pasar de $h = 1$ a $h = 0.5$ el error se reduce aproxim
 mitad, y con $h = 0.1$ queda cerca de la décima parte del de $h = 1$: en la A baja de 16.0 a 1.5
 equipos en $t = 5$ y en la B de 55.1 a 5.1. En la organización C la reducción es menor en
 $t = 5$ (de 27.8 a 16.7 y a 3.6 equipos) y en $t = 10$ y $t = 15$ los errores ya son de menos
-de un equipo con cualquier $h$. El instante en que el error es mayor depende de $k$:
-en la organización A el error de $h = 1$ es mayor en $t = 10$, en la B y en la C es mayor en
-$t = 5$.
+de un equipo con cualquier $h$. El instante en que el error de $h = 1$ es mayor cambia entre
+organizaciones: en la A es mayor en $t = 10$, en la B y en la C es mayor en $t = 5$.
 
 \begin{table}[htbp]
   \centering
@@ -171,9 +171,9 @@ $t = 5$.
 \subsection{Estabilidad del modelo discreto}
 \label{subsec:res-estabilidad}
 
-La Figura \ref{fig:exp3-estabilidad} muestra la sucesión $V_{n+1} = (1 - hk)\,V_n$ para la
-organización C ($k = 0.7$, $V_0 = 1000$) con $h = 1$, $h = 2$ y $h = 3$, es decir $hk = 0.7$,
-$1.4$ y $2.1$. Con $hk = 0.7$ la sucesión decrece de manera monótona, se mantiene positiva y
+La sucesión $V_{n+1} = (1 - hk)\,V_n$ para la organización C ($k = 0.7$, $V_0 = 1000$) con
+$h = 1$, $h = 2$ y $h = 3$, es decir $hk = 0.7$, $1.4$ y $2.1$, está en la Figura
+\ref{fig:exp3-estabilidad}. Con $hk = 0.7$ la sucesión decrece de manera monótona, se mantiene positiva y
 queda por debajo de la referencia en todos los nodos. Con $hk = 1.4$ la sucesión cambia de signo
 en cada paso: vale $-400$ en $t = 2$, $160$ en $t = 4$ y $-64$ en $t = 6$, y la amplitud de la
 oscilación se reduce en cada paso hasta que la sucesión queda indistinguible de cero. Con
@@ -196,8 +196,8 @@ casos con $hk > 1$ la sucesión toma valores negativos desde el primer paso.
 \subsection{Aparición de nuevas vulnerabilidades}
 \label{subsec:res-lambda}
 
-La Figura \ref{fig:exp3-lambda} muestra la simulación de $V' = \lambda - kV$ con $V_0 = 1000$,
-$k = 0.3$ y $h = 0.1$ para $\lambda \in \{0,\, 50,\, 100,\, 200\}$. Las cuatro curvas parten de
+La simulación de $V' = \lambda - kV$ con $V_0 = 1000$, $k = 0.3$ y $h = 0.1$ para
+$\lambda \in \{0,\, 50,\, 100,\, 200\}$ está en la Figura \ref{fig:exp3-lambda}. Las cuatro curvas parten de
 $1000$ y decrecen de manera monótona; ninguna cruza su valor de equilibrio $\lambda/k$, marcado
 con una línea punteada. La curva de $\lambda = 0$ es la misma que la de la organización B con
 $h = 0.1$ de la Figura \ref{fig:exp3-organizaciones}. Cuanto mayor es $\lambda$, más alto es el

@@ -62,9 +62,9 @@ se separa de la curva.
 \label{subsec:euler-mejorado}
 
 El método de Euler usa solo la pendiente al comienzo de cada intervalo. El método de Euler
-mejorado la corrige con la pendiente al final del intervalo, que no se conoce porque depende de
-$x_{n+1}$, y por eso se la estima primero con un paso de Euler. El método consta de una
-predicción y una corrección:
+mejorado la corrige con la pendiente al final del intervalo. Esa pendiente no se conoce, porque
+depende de $x_{n+1}$, y por eso se la estima primero con un paso de Euler. El método consta de
+una predicción y una corrección:
 \begin{equation}
   \tilde{x}_{n+1} = x_n + h\, f(t_n, x_n), \qquad
   x_{n+1} = x_n + \frac{h}{2} \bigl[ f(t_n, x_n) + f(t_{n+1}, \tilde{x}_{n+1}) \bigr] .
@@ -86,8 +86,8 @@ error absoluto en cada instante,
 \end{equation}
 De esa sucesión interesan dos resúmenes: el error final $E_N$, en el último instante del
 intervalo, y el error máximo $\max_n E_n$ sobre todo el intervalo. Los dos describen el error
-global, el acumulado tras $N$ pasos, que es distinto del error que comete un solo paso partiendo
-de un valor exacto, llamado error de truncamiento local (Burden et al., 2016).
+global, el acumulado tras $N$ pasos. Ese error es distinto del error de truncamiento local, el
+que comete un solo paso partiendo de un valor exacto (Burden et al., 2016).
 
 Un método es de orden $p$ cuando su error global es proporcional a $h^p$ para $h$ pequeño:
 existe una constante $C$, que depende del problema y del intervalo pero no de $h$, tal que
@@ -98,9 +98,10 @@ existe una constante $C$, que depende del problema y del intervalo pero no de $h
 El método de Euler es de orden~1 y el de Euler mejorado es de orden~2 (Burden et al., 2016).
 Que Euler sea de orden 1 y no 2, cuando su error local es proporcional a $h^2$, se explica
 porque ese error local se acumula a lo largo de $N = (t_f - t_0)/h$ pasos. La consecuencia
-práctica de \eqref{eq:orden} es que reducir $h$ a la mitad reduce el error de Euler a la mitad y
-el de Euler mejorado a la cuarta parte; en una gráfica de $E_N$ contra $h$ con ambos ejes
-logarítmicos, cada método aparece como una recta de pendiente $p$.
+práctica de \eqref{eq:orden} es que reducir $h$ a la mitad reduce el error de Euler a cerca de
+la mitad y el de Euler mejorado a cerca de la cuarta parte; en una gráfica del error contra $h$ con ambos ejes
+logarítmicos, cada método aparece como una recta de pendiente $p$. La cota vale tanto para el
+error final como para el error máximo, porque los dos son errores globales.
 
 La cota \eqref{eq:orden} describe solo el error de truncamiento. Cada operación en punto
 flotante agrega un error de redondeo, y la cantidad de operaciones crece como $1/h$. Burden et
@@ -157,7 +158,7 @@ geométrica, porque $t_n = nh$ da
   \label{eq:referencia-discreta}
 \end{equation}
 con razón $e^{-hk}$ en lugar de $1 - hk$. Como $1 - hk$ es el polinomio de Taylor de primer
-grado de $e^{-hk}$ y la exponencial está por encima de su tangente, se cumple
+grado de $e^{-hk}$ y la exponencial, por ser convexa, está por encima de su tangente, se cumple
 $0 < 1 - hk < e^{-hk}$ para $0 < hk < 1$: la aproximación de Euler queda por debajo de la
 referencia en cada paso, y la diferencia entre las dos razones se achica cuando $hk$ tiende a
 cero.
@@ -184,14 +185,14 @@ condición de estabilidad
   \label{eq:estabilidad}
 \end{equation}
 Burden et al. (2016) obtienen esa misma condición para el método de Euler aplicado a la
-ecuación de prueba $x' = \lambda x$ con $\lambda < 0$, y la llaman región de estabilidad absoluta.
+ecuación de prueba $x' = \mu x$ con $\mu < 0$, y la llaman región de estabilidad absoluta.
 La condición \eqref{eq:estabilidad} garantiza que la sucesión se extinga, pero no que tenga
 sentido para el fenómeno: una cantidad de equipos no puede ser negativa, y la referencia
 \eqref{eq:solucion-referencia} nunca lo es. Para que el modelo discreto conserve el signo y la
-monotonía de la referencia hace falta $0 < hk < 1$. Conviene distinguir esta noción de la
-convergencia del método: la estabilidad describe lo que hace la sucesión con un $h$ fijo cuando
-$n$ crece; la convergencia, que el error \eqref{eq:error-absoluto} tienda a cero cuando $h$
-tiende a cero con el intervalo fijo.
+monotonía de la referencia hace falta $0 < hk < 1$. Esta noción es distinta de la convergencia
+del método: la estabilidad describe lo que hace la sucesión con un $h$ fijo cuando $n$ crece; la
+convergencia, que el error \eqref{eq:error-absoluto} tienda a cero cuando $h$ tiende a cero con
+el intervalo fijo.
 
 \subsection{Modelo con aparición de nuevas vulnerabilidades}
 \label{subsec:nuevas-vulnerabilidades}
@@ -225,7 +226,7 @@ del equilibrio, $D_n = V_n - V^{*}$, y se usa que $h\lambda = hk\, V^{*}$, resul
 \end{equation}
 la misma sucesión geométrica de \eqref{eq:modelo-discreto}. El equilibrio es un punto fijo del
 modelo discreto, y la condición \eqref{eq:estabilidad} decide del mismo modo si la simulación se
-acerca a él de forma monótona, oscilando o si se aleja.
+acerca a él de forma monótona, si se acerca oscilando o si se aleja.
 
 \subsection{Gestión de vulnerabilidades}
 \label{subsec:gestion-vulnerabilidades}
@@ -270,8 +271,8 @@ parche y activos que no se pueden parchear.
 CVE (Common Vulnerabilities and Exposures) es el catálogo público de vulnerabilidades
 divulgadas. La misión del programa es identificar, definir y catalogar las vulnerabilidades de
 ciberseguridad hechas públicas, de modo que cada una tenga un registro único, el CVE Record,
-con un identificador de la forma CVE-AAAA-NNNNN que todos los proveedores, herramientas y
-bases de datos usan para referirse a ella. El programa está patrocinado por CISA, agencia del
+con un identificador de la forma CVE-AAAA-NNNNN que proveedores, herramientas y bases de datos
+usan para referirse a ella. El programa está patrocinado por CISA, agencia del
 Departamento de Seguridad Nacional de Estados Unidos, y lo opera la corporación MITRE (MITRE
 Corporation, 2021).
 
@@ -292,8 +293,8 @@ organización.
 \subsubsection{Priorización y consecuencias de no actualizar}
 \label{subsubsec:priorizacion}
 
-Ninguna organización puede parchear todo de inmediato, así que la gestión de vulnerabilidades
-exige priorizar. Souppaya y Scarfone (2022) proponen ordenar los parches según cuánto riesgo
+Como ninguna organización puede parchear todo de inmediato, la gestión de vulnerabilidades
+exige priorizar, y Souppaya y Scarfone (2022) proponen ordenar los parches según cuánto riesgo
 reducen: un parche tiene mayor prioridad si corrige una vulnerabilidad severa, presente en
 muchos activos o en activos importantes, o que ya se está explotando; uno que corrige una
 vulnerabilidad de bajo riesgo en pocos activos poco importantes puede esperar. La severidad
@@ -306,11 +307,12 @@ Security Agency [CISA], s.f.).
 Mantener sistemas sin actualizar tiene consecuencias directas. Una vez que una vulnerabilidad se
 hace pública, el riesgo suele aumentar porque los atacantes desarrollan exploits para ella, y
 cada parche de rutina que se posterga abre una ventana de oportunidad adicional (Souppaya y
-Scarfone, 2022). Si la vulnerabilidad sin parchear se explota, la organización enfrenta una
-filtración de datos o una infección por ransomware, debe ejecutar una respuesta a incidentes,
-puede sufrir daño reputacional y multas, y de todos modos termina instalando el parche que había
-pospuesto. El documento agrega que postergar el parcheo de rutina vuelve más difícil y
-disruptivo el parcheo de emergencia, porque los parches nuevos suelen requerir los anteriores.
+Scarfone, 2022). Según el mismo documento, si la vulnerabilidad sin parchear se explota, la
+organización puede sufrir una filtración de datos o una infección por ransomware, debe ejecutar
+una respuesta a incidentes, se expone a daño reputacional y multas, y de todos modos termina
+instalando el parche que había pospuesto. El documento agrega que postergar el parcheo de rutina
+vuelve más difícil y disruptivo el parcheo de emergencia, porque los parches nuevos suelen
+requerir los anteriores.
 
 \subsubsection{MITRE ATT\&CK y la técnica T1190}
 \label{subsubsec:attack-t1190}
