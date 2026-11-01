@@ -3,6 +3,14 @@
 Fecha: 2026-11-01, sesión 4. Leer también `CLAUDE.md`, `CONTEXT.md`, `docs/REQUISITOS.md`,
 `docs/RUBRICA_EVALUACION.md`, `docs/ENTREGA.md` y `docs/adr/0001`.
 
+Nota del 2026-11-01 (terminal de `../informe-sumatorias`): los cinco retoques leves de la
+revisión externa (k como tasa por unidad de tiempo en Introducción y Marco teórico, "única
+deducción analítica" quitada, error relativo ubicado en t = 5, "error máximo ... de la cantidad
+inicial" en Conclusiones, y el día declarado como unidad de tiempo en Metodología) **ya están
+aplicados** en el commit `77bffdc`, verificados (0 cajas, 0 referencias rotas, verificador sin
+hallazgos, 0 CR sueltos) y marcados con `marcar_humanizado.py`. No se repiten. Las cuatro
+correcciones de §3 siguen pendientes.
+
 ## 1. Objetivo del proyecto
 
 Informe académico "Simulación numérica de sistemas dinámicos aplicada a ciberseguridad" para
@@ -107,6 +115,9 @@ push. Recién después entregar y marcar el último ítem de `docs/ENTREGA.md`.
 
 ## 3d. Archivos tocados en esta sesión
 
+- `informe/secciones/01-introduccion.tex`, `02-marco-teorico.tex`, `03-metodologia.tex`,
+  `05-discusion.tex`, `06-conclusiones.tex` y sus marcas en `.claude/hooks/humanizado/`: los
+  cinco retoques de la revisión externa (commit `77bffdc`, pusheado, desde la otra terminal).
 - `informe/secciones/07-bibliografia.tex`: fechas de consulta (commit `216d240`, pusheado).
 - `docs/SESSION_HANDOFF.md`: este archivo.
 - `CLAUDE.md`: fechas de la bibliografía agregadas a las decisiones tomadas.
