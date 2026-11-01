@@ -67,7 +67,11 @@ código quedan en inglés o español según estén.
 - Repo privado hasta entregar, después público (ver `docs/adr/0001`). El checklist de entrega
   está en `docs/ENTREGA.md`.
 - Se cita a Claude en la bibliografía en formato APA y se menciona su uso en Metodología, igual
-  que en el trabajo anterior.
+  que en el trabajo anterior. Las fechas de consulta ("Recuperado el ...") de la bibliografía
+  son el 18 de octubre de 2026, por decisión de los autores: no actualizarlas.
+- Las correcciones que mande un revisor externo (un compañero, otro agente) se verifican contra
+  el código y los `.tex` y se discuten con el usuario antes de aplicarlas. Se aplican en este
+  repo, no en una copia aparte.
 
 ## Reglas de calidad que salen de la rúbrica
 
