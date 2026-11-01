@@ -66,9 +66,9 @@ propias y ninguno escapa a la necesidad de elegir $h$ según $k$. En el modelo c
 Euler mejorado con $h = 1/k$ avanza con razón $0.5$ y no cae a cero en un paso, lo que lo hace
 más tolerante que Euler a pasos del orden de $1/k$; pero esa tolerancia cuesta una evaluación
 más por paso y tiene su propio límite de estabilidad.
-El parámetro $k$ representa la fracción de los equipos todavía vulnerables que la organización
-corrige por unidad de tiempo: con $k = 0.1$ se corrige, en promedio, un décimo de lo pendiente
-cada día. Su inversa $1/k$ es el tiempo característico del proceso, 10 días para la organización
+El parámetro $k$ representa la tasa a la que la organización corrige los equipos todavía
+vulnerables, en proporción a los que quedan: con $k = 0.1$, cada día se corrige cerca de un
+décimo de lo pendiente. Su inversa $1/k$ es el tiempo característico del proceso, 10 días para la organización
 A, 3.3 para la B y 1.4 para la C, y $\ln 2 / k$ es el tiempo en que la cantidad se reduce a la
 mitad: 6.9, 2.3 y 1.0 días. La organización C es la que reduce más rápido los sistemas
 vulnerables. En la Tabla \ref{tab:exp3-valores} le quedan menos de un equipo en $t = 10$ y
@@ -80,9 +80,9 @@ de la C es indistinguible de cero desde $t \approx 8$. La forma es la misma en l
 exponencial decreciente; lo que cambia es la escala de tiempo, que se contrae en proporción a
 $1/k$.
 Interpretar un $k$ elevado como mayor capacidad de respuesta es razonable con dos salvedades. La
-primera es que $k$ mide una proporción, no una cantidad absoluta: una organización que corrige
-el 70\,\% de lo pendiente por día sobre 100 equipos hace menos trabajo que otra que corrige el
-10\,\% sobre 10\,000, y el modelo no distingue entre un equipo de respuesta grande y un parque
+primera es que $k$ mide una proporción, no una cantidad absoluta: una organización con $k = 0.7$
+sobre un parque de 100 equipos corrige menos equipos por día que otra con $k = 0.1$ sobre
+10\,000, y el modelo no distingue entre un equipo de respuesta grande y un parque
 chico. La segunda es que $k$ resume un proceso completo, no una sola habilidad: la sección
 probar, instalar y verificar, y una demora en cualquiera de ellas baja el $k$ efectivo. Los
 factores reales que explican valores distintos de $k$ entre organizaciones son los que Souppaya

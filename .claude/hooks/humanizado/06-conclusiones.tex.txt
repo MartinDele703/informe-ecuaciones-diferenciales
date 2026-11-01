@@ -6,7 +6,7 @@ la teoría. Dentro del rango en que la teoría afirma valer, ninguna medición c
 predicción. Sobre el modelo de remediación, el método de Euler reproduce el
 decaimiento exponencial de los equipos vulnerables mientras el paso sea menor que el tiempo
 característico $1/k$. El parámetro $k$ resume el proceso de parcheo de una organización.
-Sobre el primer objetivo, las dos funciones quedaron implementadas con la interfaz de la consigna
+Sobre el primer objetivo, las dos funciones quedaron implementadas con la interfaz requerida
 y verificadas. Con pendiente constante, Euler reproduce la recta de referencia sin error para
 cualquier paso, como corresponde a un método que avanza por la tangente. Con decrecimiento
 exponencial, el método se separa de la referencia según el paso, y el caso $h = 1$ mostró el
@@ -23,8 +23,8 @@ de evaluar, ese costo puede superar el beneficio.
 Sobre el tercero, las tres organizaciones se comportan como tres escalas de tiempo de la misma
 curva: la que tiene $k = 0.7$ queda con menos de un equipo vulnerable en diez días, y la que
 tiene $k = 0.1$ conserva más de un tercio de su parque en el mismo plazo. El parámetro $k$ es la
-fracción de los equipos pendientes que se corrige por día, y su inversa es el tiempo
-característico de remediación. Las diferencias reales entre organizaciones remiten a las demoras
+tasa de remediación, la proporción de los equipos pendientes que se corrige por unidad de
+tiempo, y su inversa es el tiempo característico de remediación. Las diferencias reales entre organizaciones remiten a las demoras
 del proceso de parcheo que documenta la bibliografía técnica: disponibilidad del parche,
 pruebas, ventanas de mantenimiento, dependencias y automatización. El error de la simulación
 con un paso dado crece con $k$, lo que muestra que el paso adecuado se mide en relación con la

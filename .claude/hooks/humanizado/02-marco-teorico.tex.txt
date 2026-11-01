@@ -58,17 +58,17 @@ flotante agrega un error de redondeo, y la cantidad de operaciones crece como $1
 al. (2016) muestran que, con redondeo de tamaño $\delta$ por paso, la cota del error de Euler
 tiene un término proporcional a $h$ y otro proporcional a $\delta/h$, de modo que existe un valor
 de $h$ por debajo del cual el error total deja de disminuir.
-La consigna modela la cantidad $V(t)$ de equipos vulnerables de una organización con el problema
-de valor inicial
+El modelo de remediación describe la cantidad $V(t)$ de equipos vulnerables de una organización
+con el problema de valor inicial
 V'(t) = -k\, V(t), \qquad V(0) = V_0 ,
 donde $k > 0$ es la rapidez de remediación. El modelo supone que en cada instante se corrige una
 fracción fija $k$ de los equipos que siguen vulnerables, así que la cantidad disminuye tanto más
 rápido cuanto más equipos quedan por corregir. Las unidades de $k$ son el inverso de las del
-tiempo, y su recíproco $1/k$ es un tiempo característico del proceso. La consigna proporciona
-como solución de referencia
+tiempo, y su recíproco $1/k$ es un tiempo característico del proceso. La solución de referencia
+del problema es
 V(t) = V_0\, e^{-kt} ,
-sin pedir que se la deduzca; en este informe se la usa tal como se la recibe y no se resuelve
-ninguna ecuación diferencial por métodos analíticos. De \eqref{eq:solucion-referencia} se leen
+que en este informe se toma como dato: no se la deduce ni se resuelve ninguna ecuación
+diferencial por métodos analíticos. De \eqref{eq:solucion-referencia} se leen
 tres propiedades: $V(t)$ es positiva para todo $t$, decrece de forma monótona y tiende a cero. En
 el tiempo $t = 1/k$ queda la fracción $e^{-1} \approx 0.37$ de los equipos iniciales, y en
 $t = \ln 2 / k$ queda la mitad. El caso de verificación $x' = -x$, $x(0) = 1$ es este mismo
@@ -108,12 +108,12 @@ del método: la estabilidad describe lo que hace la sucesión con un $h$ fijo cu
 convergencia, que el error \eqref{eq:error-absoluto} tienda a cero cuando $h$ tiende a cero con
 el intervalo fijo.
 El modelo \eqref{eq:modelo-remediacion} supone que solo se corrigen vulnerabilidades. Para
-representar que mientras tanto aparecen equipos vulnerables nuevos, la consigna agrega un
+representar que mientras tanto aparecen equipos vulnerables nuevos, se agrega al modelo un
 término constante:
 V'(t) = \lambda - k\, V(t), \qquad V(0) = V_0 ,
 donde $\lambda \ge 0$ es la tasa de aparición, en equipos por unidad de tiempo. Con
-$\lambda = 0$ se recupera \eqref{eq:modelo-remediacion}. La consigna no da una solución de
-referencia para \eqref{eq:modelo-lambda} y este informe no la deduce; el análisis se apoya en
+$\lambda = 0$ se recupera \eqref{eq:modelo-remediacion}. Para \eqref{eq:modelo-lambda} no se
+dispone de una solución de referencia y este informe no la deduce; el análisis se apoya en
 el signo de la derivada. La cantidad deja de cambiar cuando $V'(t) = 0$, es decir, cuando
 $\lambda - kV = 0$, lo que define el valor de equilibrio
 V^{*} = \frac{\lambda}{k} .
