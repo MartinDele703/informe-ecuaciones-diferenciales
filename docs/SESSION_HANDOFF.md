@@ -1,6 +1,6 @@
 # SESSION_HANDOFF
 
-Fecha: 2026-11-01, sesión 4. Leer también `CLAUDE.md`, `CONTEXT.md`, `docs/REQUISITOS.md`,
+Fecha: 2026-11-01, sesión 5. Leer también `CLAUDE.md`, `CONTEXT.md`, `docs/REQUISITOS.md`,
 `docs/RUBRICA_EVALUACION.md`, `docs/ENTREGA.md` y `docs/adr/0001`.
 
 Nota del 2026-11-01 (terminal de `../informe-sumatorias`): los cinco retoques leves de la
@@ -18,7 +18,7 @@ Cálculo Aplicado (UCU, 2026-2), en LaTeX, más el código Python que genera sus
 Meta: nota máxima según la rúbrica. Es el segundo trabajo del curso; el proceso completo se
 hereda de `../informe-sumatorias`.
 
-## 2. Estado: informe terminado y verificado; quedan cuatro correcciones chicas antes de entregar
+## 2. Estado: informe terminado, corregido y pusheado; solo falta entregar el PDF
 
 Lo que hay:
 - **Código terminado y reproducible.** `python src/main.py` corre completo, imprime 34 líneas,
@@ -39,9 +39,16 @@ Lo que hay:
   (`C:\Users\marti\OneDrive\Escritorio\Informe_Simulacion_numerica_Chouhy_Rial.pdf`): hay que
   regenerar las dos después de las correcciones.
 
-Lo que falta: aplicar las correcciones de §3 (acordadas con el usuario) y entregar el PDF.
+Sesión 5: se aplicaron las cuatro correcciones de §3 (commits `6d3474c` y `c636d2f`, pusheados),
+se corrió toda la cadena de verificación (main.py, verificador `--todo`, Tectonic con log: 25
+páginas, 0 cajas desbordadas, 0 referencias indefinidas, 0 CR sueltos) y se regeneraron
+`informe/main.pdf` y la copia del Escritorio (texto idéntico, 18:25). Además se agregó
+`\Urlmuskip=0mu plus 1mu` en `main.tex` porque el cambio de fechas de `216d240` había dejado
+una caja desbordada de 5 pt en la entrada de CVE de la bibliografía.
 
-## 3. Correcciones acordadas para la próxima sesión (en este orden)
+Lo que falta: entregar el PDF del Escritorio y marcar el último ítem de `docs/ENTREGA.md`.
+
+## 3. Correcciones acordadas en la sesión 4 (aplicadas en la sesión 5)
 
 Vienen de una revisión que mandó un compañero (hecha con su propio agente). Se analizaron una
 por una contra el código y los `.tex`; estas cuatro se aceptaron, las demás no (ver §3b).
@@ -142,11 +149,9 @@ push. Recién después entregar y marcar el último ítem de `docs/ENTREGA.md`.
 
 ## 5. Próximos pasos recomendados, en orden
 
-1. Aplicar las cuatro correcciones de §3 (empezar por la 3, que es la única que toca código y
-   obliga a regenerar la tabla; 1, 2 y 4 son de minutos).
-2. Correr toda la cadena de verificación de §3 y regenerar el PDF y la copia del Escritorio.
-3. Commit, push, entregar el PDF y marcar el último ítem de `docs/ENTREGA.md`.
-4. Decidir `README.md` y los objetos sueltos (§3e), sin apuro.
+1. Entregar `C:\Users\marti\OneDrive\Escritorio\Informe_Simulacion_numerica_Chouhy_Rial.pdf` y
+   marcar el último ítem de `docs/ENTREGA.md`.
+2. Decidir `README.md` y los objetos sueltos (§3e), sin apuro.
 
 ## 6. Preferencias y restricciones
 
