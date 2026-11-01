@@ -1,0 +1,20 @@
+Este trabajo evalúa la precisión, el costo y la estabilidad de los métodos de Euler y de Euler
+mejorado sobre ecuaciones diferenciales de primer orden con solución de referencia conocida.
+Luego aplica el método de Euler a un modelo de remediación de vulnerabilidades, $V' = -kV$, en el
+que $V$ es la cantidad de equipos vulnerables de una organización y $k$ su rapidez de remediación.
+Los dos métodos se implementaron en Python, acumulando paso a paso, y se midió el error
+absoluto contra la referencia para pasos $h$ entre $1$ y $0.01$. Se simularon tres
+organizaciones con $k = 0.1$, $0.3$ y $0.7$, se estudió el modelo discreto
+$V_{n+1} = (1 - hk)V_n$ con $hk > 1$ y se agregó una tasa $\lambda$ de aparición de
+vulnerabilidades nuevas. El error máximo de Euler se divide por cerca de diez cuando $h$ se
+divide por diez, y el de Euler mejorado por cerca de cien, de acuerdo con sus órdenes 1 y 2;
+Euler mejorado alcanza con 200 evaluaciones de $f$ un error menor que Euler con 1\,000. El
+modelo discreto conserva el sentido del fenómeno solo si $0 < hk < 1$: con $hk = 1.4$ la
+sucesión oscila entre valores negativos y positivos, y con $hk = 2.1$ diverge. Con aparición de
+vulnerabilidades nuevas, la cantidad de equipos vulnerables se estabiliza en el equilibrio
+$\lambda/k$, un piso permanente que solo baja si se remedia más rápido o aparecen menos
+vulnerabilidades. El parámetro $k$ resume el proceso de parcheo que describen NIST, MITRE, FIRST
+y CISA, y aumentarlo acorta la ventana en que la técnica T1190 de MITRE ATT\&CK puede explotar
+un sistema expuesto. La conclusión principal es que el paso de la simulación debe elegirse según
+la rapidez del fenómeno, a través del producto $hk$, y que la precisión conviene medirla con el
+error máximo antes que con el final.
