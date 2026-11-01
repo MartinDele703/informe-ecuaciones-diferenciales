@@ -36,9 +36,11 @@ de referencia evaluada en los mismos instantes.
 
 Dos detalles de implementación afectan la comparación con la referencia. El número de pasos es
 $N = \mathrm{round}((t_f - t_0)/h)$, redondeado y no truncado, porque en punto flotante un
-cociente como $10/0.1$ no da exactamente $100$. Los tiempos se calculan como $t_n = t_0 + n h$ en
-lugar de acumular $t \leftarrow t + h$: sumar $h$ cientos de veces arrastra un error de redondeo
-en $t$, y la referencia $x(t_n)$ se evaluaría en un instante que no es el del paso.
+cociente como $10/0.1$ no tiene garantizado dar exactamente $100$: $0.1$ no se representa de
+forma exacta en binario y truncar podría perder el último paso. Los tiempos se calculan como
+$t_n = t_0 + n h$ en lugar de acumular $t \leftarrow t + h$: sumar $h$ cientos de veces arrastra
+un error de redondeo en $t$, y la referencia $x(t_n)$ se evaluaría en un instante que no es el
+del paso.
 
 El resto del código se reparte en tres módulos de experimento, un módulo de utilidades
 compartidas y un punto de entrada. Los de experimento son
@@ -50,11 +52,11 @@ fija el estilo de las figuras y escribe los archivos de salida; el punto de entr
 experimentos y regenera desde cero todas las figuras y tablas del informe; pasarle un número
 corre un solo experimento. Cada figura se guarda como PDF vectorial en \texttt{informe/figuras/}
 y cada tabla como cuerpo de un entorno \texttt{tabular} en \texttt{informe/tablas/}, que el
-documento incluye con \texttt{\textbackslash input}. El informe no contiene ningún número que el
-código no haya escrito en uno de esos archivos. La consola imprime un resumen corto por
-experimento, que sirve para comprobar que la corrida terminó; nada de ahí se copia al texto. El
-trabajo no tiene componentes aleatorios, así que no hay semilla: dos corridas producen archivos
-idénticos.
+documento incluye con \texttt{\textbackslash input}. El informe no contiene ningún resultado
+numérico que el código no haya escrito en uno de esos archivos. La consola imprime un resumen
+corto por experimento, que sirve para comprobar que la corrida terminó; nada de ahí se copia al
+texto. El trabajo no tiene componentes aleatorios, así que no hay semilla: dos corridas producen
+archivos idénticos.
 
 El repositorio con el código, las figuras, las tablas y las fuentes \LaTeX{} de este informe está
 disponible en \url{https://github.com/MartinDele703/informe-ecuaciones-diferenciales}.
@@ -82,9 +84,9 @@ paso y su error final coincide con la referencia en $t = 10$, que es pequeña po
 El tercer experimento aplica Euler al modelo de remediación $V' = -kV$, $V(0) = V_0$, con
 referencia $V(t) = V_0 e^{-kt}$, en tres partes. La primera simula las organizaciones A, B y C
 ($k = 0.1$, $0.3$ y $0.7$, todas con $V_0 = 1000$) sobre $0 \le t \le 20$ con
-$h \in \{1,\, 0.5,\, 0.1\}$, grafica $V(t)$ junto a la referencia y tabula la cantidad aproximada
-de equipos vulnerables en $t = 5$, $10$ y $15$, el valor de referencia y el error absoluto, para
-cada organización y cada $h$. La segunda estudia la estabilidad del modelo discreto
+$h \in \{1,\, 0.5,\, 0.1\}$. Para cada organización y cada $h$ se grafica $V(t)$ junto a la
+referencia y se tabulan la cantidad aproximada de equipos vulnerables en $t = 5$, $10$ y $15$, el
+valor de referencia y el error absoluto. La segunda estudia la estabilidad del modelo discreto
 $V_{n+1} = (1 - hk)\,V_n$ con $hk > 1$; sus parámetros se eligen en la sección
 \ref{subsec:parametros}. La tercera incorpora la aparición de nuevas vulnerabilidades,
 $V' = \lambda - kV$, con $V_0 = 1000$, $k = 0.3$ y $\lambda \in \{0,\, 50,\, 100,\, 200\}$:
@@ -100,7 +102,7 @@ resúmenes: el error final $E_N$, en el último instante del intervalo, y el err
 $\max_n E_n$ sobre todo el intervalo. El primero dice con qué precisión llega el método al final;
 el segundo detecta si en el camino se alejó más de lo que el final sugiere. En el modelo con
 $\lambda$ la consigna no da solución de referencia y el trabajo no resuelve ecuaciones
-diferenciales de forma analítica, así que la comparación es contra el valor de equilibrio
+diferenciales de forma analítica. La comparación es entonces contra el valor de equilibrio
 $\lambda/k$ de la sección \ref{sec:marco-teorico}: se mide cuánto se acerca a ese equilibrio el
 valor simulado al final del intervalo.
 
@@ -109,7 +111,7 @@ $f$: $N$ para Euler y $2N$ para Euler mejorado, que evalúa la pendiente dos vec
 miden tiempos de ejecución. Para ecuaciones tan baratas de evaluar, un cronómetro registra sobre
 todo el ruido del sistema operativo, y sus cifras cambian entre corridas y entre máquinas. El
 trabajo de cada paso es fijo y conocido, así que contar pasos y evaluaciones caracteriza el
-costo sin esa incertidumbre y de forma reproducible.
+costo de forma reproducible.
 
 \subsection{Decisiones que la consigna no fija}
 \label{subsec:parametros}
@@ -125,14 +127,15 @@ ver varias oscilaciones antes del final.
 
 Para el modelo con $\lambda$ se usó $h = 0.1$ sobre $0 \le t \le 20$, el mismo intervalo que el
 de las organizaciones. Es el paso más fino de los que se usan en el estudio de las organizaciones
-y el que menor error máximo muestra en el experimento de error contra tamaño del paso, con lo cual
-las diferencias entre los cuatro valores de $\lambda$ reflejan el modelo y no el método.
+y, de esos tres, el de menor error máximo en el experimento de error contra tamaño del paso. Con
+ese paso, las diferencias entre los cuatro valores de $\lambda$ se atribuyen al modelo y no al
+método.
 
 La figura de error absoluto contra $t$ usa escala logarítmica en el eje vertical, y la de error
 máximo contra $h$ usa escala logarítmica en los dos ejes. Los errores abarcan varios órdenes de
 magnitud entre $h = 1$ y $h = 0.01$, y en escala lineal las curvas de los pasos chicos quedarían
 pegadas al cero. En la figura log-log un error proporcional a $h^{p}$ se ve como una recta de
-pendiente $p$, así que el orden de cada método se lee directamente de la figura. Las figuras del
+pendiente $p$, y el orden de cada método se lee directamente de la figura. Las figuras del
 modelo de remediación quedan en escala lineal, porque ahí interesan la cantidad de equipos y su
 signo.
 
