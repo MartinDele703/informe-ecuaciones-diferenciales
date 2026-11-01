@@ -1,6 +1,6 @@
 # SESSION_HANDOFF
 
-Fecha: 2026-11-01, sesión 5. Leer también `CLAUDE.md`, `CONTEXT.md`, `docs/REQUISITOS.md`,
+Fecha: 2026-11-01, sesión 6. Leer también `CLAUDE.md`, `CONTEXT.md`, `docs/REQUISITOS.md`,
 `docs/RUBRICA_EVALUACION.md`, `docs/ENTREGA.md` y `docs/adr/0001`.
 
 Nota del 2026-11-01 (terminal de `../informe-sumatorias`): los cinco retoques leves de la
@@ -9,7 +9,7 @@ deducción analítica" quitada, error relativo ubicado en t = 5, "error máximo 
 inicial" en Conclusiones, y el día declarado como unidad de tiempo en Metodología) **ya están
 aplicados** en el commit `77bffdc`, verificados (0 cajas, 0 referencias rotas, verificador sin
 hallazgos, 0 CR sueltos) y marcados con `marcar_humanizado.py`. No se repiten. Las cuatro
-correcciones de §3 siguen pendientes.
+correcciones de §3 se aplicaron en la sesión 5.
 
 ## 1. Objetivo del proyecto
 
@@ -18,7 +18,7 @@ Cálculo Aplicado (UCU, 2026-2), en LaTeX, más el código Python que genera sus
 Meta: nota máxima según la rúbrica. Es el segundo trabajo del curso; el proceso completo se
 hereda de `../informe-sumatorias`.
 
-## 2. Estado: informe terminado y pusheado; falta entregar y rehacer la versión Word
+## 2. Estado: informe y versión Word terminados; falta entregar
 
 Lo que hay:
 - **Código terminado y reproducible.** `python src/main.py` corre completo, imprime 34 líneas,
@@ -49,57 +49,55 @@ una caja desbordada de 5 pt en la entrada de CVE de la bibliografía.
 Entregables armados en el Escritorio (`C:\Users\marti\OneDrive\Escritorio\`), fuera del repo:
 `Informe_Simulacion_numerica_Chouhy_Rial.pdf` (el informe), `informe-ecuaciones-diferenciales.zip`
 (`git archive` del commit `9dd2cae` más `informe/main.pdf`), `RESUMEN_CAMBIOS.md` (cambios y
-verificaciones para el compañero) y `Informe_Simulacion_numerica_Chouhy_Rial.docx` (versión Word,
-**rechazada por el usuario**, ver §3f).
+verificaciones para el compañero) y `Informe_Simulacion_numerica_Chouhy_Rial.docx` (versión Word
+rehecha en la sesión 6, ver §3f; pisó la que el usuario había rechazado).
 
-Lo que falta: (1) rehacer la versión Word para que se vea como el PDF (§3f); (2) entregar el PDF
-y marcar el último ítem de `docs/ENTREGA.md`.
+Lo que falta: entregar el PDF y marcar el último ítem de `docs/ENTREGA.md`.
 
-## 3f. Versión Word editable: lo que se hizo y por qué hay que rehacerla
+## 3f. Versión Word editable: cómo se hizo (sesión 6) y cómo regenerarla
 
-El usuario pidió "el PDF en versión Word editable". Se generó un `.docx` con **pandoc 3.9 desde las
-fuentes LaTeX** (no desde el PDF) y el usuario lo rechazó: "quedó totalmente distinto al informe
-en PDF, tiene un diseño muy alejado; yo quiero poder editar en Word el PDF". Lo que quiere es un
-Word que **se vea como el PDF** (misma tipografía Latin Modern, portada en página aparte,
-márgenes de 2.5 cm en A4 a 11 pt, encabezados numerados en serif, tablas con reglas finas tipo
-booktabs, pies "Figura N:" en texto normal, 25 páginas o cerca) y que siga siendo editable.
+El usuario pidió "el PDF en versión Word editable" que **se vea como el PDF**. La primera versión
+(pandoc con estilos por defecto) fue rechazada por el diseño. En la sesión 6 se probó primero
+importar el PDF con Word por COM (opción A): descartada porque las Tablas 2 y 3 quedaban
+desarmadas, las 1 y 4 como imágenes, las ecuaciones como texto y una figura separada de su pie.
+Se hizo entonces la opción B: **pandoc desde las fuentes LaTeX más un posprocesado con
+python-docx y Word por COM**. Resultado: 26 páginas (el PDF tiene 25), cada sección empieza en la
+misma página que en el PDF salvo Conclusiones (una después), Latin Modern, portada igual, índice
+con puntos de guía, encabezados "2.1." en negrita negra, tablas con reglas booktabs, pies en 10 pt,
+926 ecuaciones OMML editables, 7 figuras PNG a 200 dpi, bibliografía con sangría francesa,
+número de página al pie, sin "??" ni rayas. El `.docx` queda guardado con el índice ya generado.
 
-Lo que ya funciona del enfoque pandoc (reutilizable si se elige la opción B):
-- Script `convertir_word.py` (copiado a `%LOCALAPPDATA%\Temp\claude-handoff\C--Repos-FACULTAD-6to-Sem--2026-2--Calculo-Aplicado-informe-ecuaciones-diferenciales.convertir_word.py`;
-  uso: `python convertir_word.py <repo> <scratchpad>`, necesita `<scratchpad>/tex/main.aux` de una
-  compilación `tectonic --keep-intermediates -o <scratchpad>/tex informe/main.tex`). Copia las
-  secciones, renderiza las figuras a PNG 200 dpi con pymupdf, resuelve `\ref`/`\eqref` con los
-  números del `.aux`, numera pies ("Figura N: ", "Tabla N: "), agrega "(N)" a las ecuaciones,
-  desarma la `list` de la bibliografía y corre pandoc con `--toc --number-sections
-  -M toc-title=Índice`; después pone sangría francesa APA con python-docx. Resultado: ecuaciones
-  OMML nativas (32 en bloque, 925 en línea), 7 figuras, 4 tablas reales, referencias resueltas,
-  sin warnings. Lo que falla es solo el **diseño**: estilos por defecto de pandoc (Calibri/Aptos,
-  encabezados azules, portada no separada, tablas sin reglas), 32 páginas.
-- Script `render_word.ps1` (misma carpeta, mismo prefijo): abre el `.docx` con Word por COM,
-  actualiza campos e índice y exporta a PDF para revisarlo con pymupdf. Word 16 está instalado y
-  responde por COM. **No hay LibreOffice ni `pdftoppm`** en esta máquina.
-- Latin Modern **no está instalada** como fuente de Windows (`C:\Windows\Fonts` no tiene
-  `lmroman*`). Hace falta instalarla (OTF de GUST, o sacarla del caché de Tectonic) para que Word
-  la muestre; si no, usar Cambria o Times New Roman como sustituto y decirlo.
+Decisiones de diseño que no son obvias:
+- **Latin Modern se instaló para el usuario** (sin administrador) desde el OTF de GUST
+  (`lm2.004otf.zip`), en `%LOCALAPPDATA%\Microsoft\Windows\Fonts` más registro `HKCU`. Word la ve
+  como familia **"LM Roman 10"** (no "Latin Modern Roman"). En otra máquina sin la fuente, Word
+  sustituye la tipografía y el documento se reacomoda; el contenido no cambia.
+- **Interlineado exacto de 13.6 pt** (el `\baselineskip` de 11 pt) en el texto: con "sencillo",
+  LM Roman da 45 líneas por página en vez de 52 y el documento se iba a 29 páginas. Los
+  encabezados, la portada, las figuras y los párrafos con ecuaciones en bloque quedan en
+  interlineado automático para que no se recorten.
+- **Silabeo automático en español** (`es-UY`): sin él, Word no corta palabras y cada párrafo
+  ocupa más líneas que en LaTeX.
+- Los estilos de las entradas del índice se ajustan **por COM con las constantes
+  `wdStyleTOC1/2/3`**, porque el Word en español los llama "TDC 1/2" y los estilos "toc 1" que
+  agrega python-docx no se usan.
+- El índice de Word descarta el espacio ancho U+2003: el separador entre número y título de los
+  encabezados son dos espacios normales.
+- La bibliografía va alineada a la izquierda (no justificada) porque Word no corta las URL.
 
-Opciones para la próxima sesión, en orden de prueba sugerido:
-- **A. Importar el PDF con Word** (`Documents.Open` sobre el `.pdf` por COM y `SaveAs2` a
-  `wdFormatXMLDocument = 12`): Word reconstruye el diseño con bastante fidelidad (portada, márgenes,
-  tablas con líneas, numeración) y suele ser lo más parecido al PDF. Riesgos: las fórmulas quedan
-  como texto con símbolos, no como ecuaciones; sustituye la fuente; las figuras vectoriales pueden
-  quedar como dibujos. Es un comando: probarlo primero, exportar a PDF con `render_word.ps1` y
-  mostrarle páginas al usuario antes de seguir.
-- **B. pandoc con `--reference-doc`** ajustado para imitar el PDF: un `reference.docx` con Latin
-  Modern (o Cambria) 11 pt, A4, márgenes 2.5 cm, Heading 1/2 en negrita serif negra, Title grande
-  centrado, Caption en texto normal, estilo Table con reglas superior, media e inferior; más un
-  `\newpage` después de la portada y del índice, y la portada armada como párrafos centrados en
-  vez de metadatos. Mantiene las ecuaciones editables. Más trabajo, pero el resultado es un Word
-  "limpio".
-- **C.** Acrobat o un conversor en línea: no hay Acrobat en la máquina y subir el PDF a un
-  servicio externo requiere el visto bueno del usuario.
-
-Sea cual sea la opción, el `.docx` final va al Escritorio con el nombre de entrega
-(`Informe_Simulacion_numerica_Chouhy_Rial.docx`, pisando el rechazado) y **no** al repo ni al ZIP.
+Scripts, en `%LOCALAPPDATA%\Temp\claude-handoff\` con el prefijo
+`C--Repos-FACULTAD-6to-Sem--2026-2--Calculo-Aplicado-informe-ecuaciones-diferenciales.`:
+- `instalar_lm.ps1 -Zip <lm2.004otf.zip> -Ext <carpeta>`: instala la fuente (ya hecho en esta
+  máquina; solo hace falta en otra).
+- `convertir_word.py <repo> <scratchpad>`: necesita `<scratchpad>/tex/main.aux` de
+  `tectonic --keep-intermediates -o <scratchpad>/tex informe/main.tex`; deja
+  `<scratchpad>/informe.docx` (contenido correcto, diseño por defecto).
+- `disenar_word.py <scratchpad>/informe.docx <salida.docx> <repo>`: aplica todo el diseño.
+- `render_guardar.ps1 -Docx <salida.docx> -Pdf <control.pdf>`: ajusta los estilos del índice,
+  actualiza campos e índice, **guarda el `.docx`** y exporta un PDF de control para revisarlo
+  con pymupdf (`page.get_pixmap`).
+Si cambia el informe, se corren los cuatro pasos en ese orden y se copia la salida al Escritorio
+con el nombre de entrega. El `.docx` **no** va al repo ni al ZIP.
 
 ## 3. Correcciones acordadas en la sesión 4 (aplicadas en la sesión 5)
 
@@ -203,16 +201,17 @@ push. Recién después entregar y marcar el último ítem de `docs/ENTREGA.md`.
   `--todo` sin hallazgos, Tectonic con log 25 páginas / 0 cajas / 0 indefinidas, 0 CR sueltos,
   `cantidad_de_pasos` probada a mano (10/0.1, 10/0.01, 30/3, 20/0.1, 3/0.3 pasan; 10/3 y 1/0.3
   lanzan `ValueError`), patrones prohibidos en el PDF a cero, páginas tocadas revisadas a ojo.
-- Word (rechazado por diseño, no por contenido): 32 páginas, pies de las 7 figuras y 4 tablas
-  presentes, sin "??", cantidad de palabras equivalente al PDF.
+- Word de la sesión 6: 26 páginas, 4 tablas reales, 926 ecuaciones OMML, 7 figuras, pies de
+  las 7 figuras y 4 tablas presentes, sin "??" ni rayas, secciones en las mismas páginas que el
+  PDF (salvo Conclusiones, una después), 187 líneas silabeadas, recortes a 150 dpi de ecuaciones
+  en línea y en bloque sin clipping, páginas de control revisadas a ojo contra el PDF.
 
 ## 5. Próximos pasos recomendados, en orden
 
-1. Rehacer la versión Word (§3f): probar primero la opción A (importar el PDF con Word por COM),
-   renderizar con `render_word.ps1` y mostrar páginas; si no convence, opción B.
-2. Entregar `C:\Users\marti\OneDrive\Escritorio\Informe_Simulacion_numerica_Chouhy_Rial.pdf` y
+1. Entregar `C:\Users\marti\OneDrive\Escritorio\Informe_Simulacion_numerica_Chouhy_Rial.pdf` y
    marcar el último ítem de `docs/ENTREGA.md`.
-3. Decidir `README.md` y los objetos sueltos (§3e), sin apuro.
+2. Decidir `README.md` y los objetos sueltos (§3e), sin apuro.
+3. Si el informe cambia, regenerar el Word con los cuatro pasos de §3f.
 
 ## 6. Preferencias y restricciones
 
