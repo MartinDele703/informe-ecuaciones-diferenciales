@@ -4,12 +4,12 @@ Correr en orden el día que se entrega. Ver `docs/adr/0001-repo-privado-hasta-en
 
 ## 1. Verificar el trabajo
 
-- [ ] `python src/main.py` corre de punta a punta sin errores y regenera todas las figuras y tablas.
-- [ ] `tectonic informe/main.tex` compila sin warnings de referencias rotas.
-- [ ] `python tools/verificar_informe.py --todo` sin hallazgos.
-- [ ] Recorrer `docs/REQUISITOS.md` ítem por ítem (pedirle a Claude que lo haga contra el PDF).
-- [ ] Fecha en la portada actualizada.
-- [ ] Link del repo en Metodología apunta al repo público definitivo.
+- [x] `python src/main.py` corre de punta a punta sin errores y regenera todas las figuras y tablas.
+- [x] `tectonic informe/main.tex` compila sin warnings de referencias rotas.
+- [x] `python tools/verificar_informe.py --todo` sin hallazgos.
+- [x] Recorrer `docs/REQUISITOS.md` ítem por ítem (pedirle a Claude que lo haga contra el PDF).
+- [x] Fecha en la portada actualizada.
+- [x] Link del repo en Metodología apunta al repo público definitivo.
 
 ## 2. Limpiar el repo antes de publicarlo
 
@@ -24,8 +24,11 @@ git remote add origin https://github.com/MartinDele703/informe-ecuaciones-difere
 git push --force origin main
 ```
 
-- [ ] Confirmar en GitHub que esos dos archivos no aparecen ni en el historial.
-- [ ] Borrar del README y de CLAUDE.md las referencias a esos dos archivos.
+- [x] Confirmar en GitHub que esos dos archivos no aparecen ni en el historial (hecho el
+      2026-11-01: los 30 commits de `main` están limpios). Ojo: GitHub conserva un tiempo los
+      commits viejos como objetos sueltos, accesibles solo por SHA (`.../commit/5554608`); para
+      purgarlos hay que pedirlo a GitHub Support, no alcanza con el push forzado.
+- [x] Borrar del README y de CLAUDE.md las referencias a esos dos archivos.
 
 ## 3. Publicar
 
@@ -33,5 +36,5 @@ git push --force origin main
 gh repo edit MartinDele703/informe-ecuaciones-diferenciales --visibility public --accept-visibility-change-consequences
 ```
 
-- [ ] Abrir el link en una ventana de incógnito y verificar que carga.
+- [x] Abrir el link en una ventana de incógnito y verificar que carga (HTTP 200 anónimo, 2026-11-01).
 - [ ] Entregar el PDF (un solo archivo).
