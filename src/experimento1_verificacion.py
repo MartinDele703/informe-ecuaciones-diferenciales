@@ -120,7 +120,7 @@ def figura_exponencial(resultados: dict[float, dict]) -> None:
     recuadro.set_xlabel("")
     recuadro.set_ylabel("")
     recuadro.tick_params(labelsize=8)
-    recuadro.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    recuadro.ticklabel_format(axis="y", style="sci", scilimits=(0, 0), useMathText=True)
     recuadro.yaxis.get_offset_text().set_fontsize(8)
     recuadro.set_title(r"detalle, $7 \leq t \leq 10$", fontsize=9, loc="right")
     ax.indicate_inset_zoom(recuadro, edgecolor="gray")
