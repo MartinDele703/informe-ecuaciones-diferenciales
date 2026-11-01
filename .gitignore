@@ -36,3 +36,6 @@ AGENTS.md
 .agents/skills/humanamente/
 .agents/skills/humanizer/
 .agents/skills/source-command-grill-with-docs/
+
+# Worktrees de los carriles paralelos de Claude Code
+.claude/worktrees/

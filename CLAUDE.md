@@ -50,8 +50,12 @@ código quedan en inglés o español según estén.
   analítica es la de la Actividad 5 (el modelo discreto $V_{n+1} = (1 - hk)V_n$ es una sucesión
   geométrica), que va en el Marco teórico o en Discusión.
 - El estudio de $hk > 1$ (Actividad 5) se hace también numéricamente, con valores de $h$ que la
-  consigna no fija (por ejemplo $hk = 1{,}5$ y $hk = 2{,}5$ con $k = 0{,}3$ o $k = 0{,}7$), y se
-  presenta como un resultado más sobre estabilidad.
+  consigna no fija, y se presenta como un resultado más sobre estabilidad. Valores elegidos:
+  $k = 0{,}7$, $V_0 = 1000$, $h \in \{1, 2, 3\}$, $0 \le t \le 30$, es decir
+  $hk \in \{0{,}7;\ 1{,}4;\ 2{,}1\}$: cubren los tres regímenes (decrece, oscila amortiguado,
+  diverge) con pasos enteros. Metodología y el experimento 3 usan exactamente esos.
+- El modelo con $\lambda$ (Actividad 6) se simula con $h = 0{,}1$ en $0 \le t \le 20$ y se compara
+  contra el equilibrio $\lambda / k$, porque la consigna no da solución de referencia.
 - No hay aleatoriedad en esta consigna, así que no hay semilla. Si apareciera, se sigue la regla
   del trabajo anterior: semilla maestra en `comun.py`, `numpy.random.default_rng`, una semilla
   distinta por repetición.
