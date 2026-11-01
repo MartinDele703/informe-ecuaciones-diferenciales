@@ -61,7 +61,9 @@ valor de referencia y el error absoluto. La segunda estudia la estabilidad del m
 $V_{n+1} = (1 - hk)\,V_n$ con $hk > 1$; sus parámetros se eligen en la sección
 $V' = \lambda - kV$, con $V_0 = 1000$, $k = 0.3$ y $\lambda \in \{0,\, 50,\, 100,\, 200\}$:
 grafica $V(t)$ para los cuatro valores con el equilibrio $\lambda/k$ marcado y tabula, para cada
-$\lambda$, ese equilibrio y el valor simulado al final del intervalo.
+$\lambda$, ese equilibrio y el valor simulado al final del intervalo. Se toma el día como unidad
+de tiempo del modelo de remediación: la consigna no fija ninguna, y las figuras la usan en los
+ejes.
 La medida de precisión es el error absoluto $E_n = |x(t_n) - x_n|$ entre la solución de
 referencia y la aproximación en cada instante de la sucesión. De cada corrida se reportan dos
 resúmenes: el error final $E_N$, en el último instante del intervalo, y el error máximo

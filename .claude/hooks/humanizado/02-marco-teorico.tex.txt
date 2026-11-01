@@ -61,9 +61,9 @@ de $h$ por debajo del cual el error total deja de disminuir.
 El modelo de remediación describe la cantidad $V(t)$ de equipos vulnerables de una organización
 con el problema de valor inicial
 V'(t) = -k\, V(t), \qquad V(0) = V_0 ,
-donde $k > 0$ es la rapidez de remediación. El modelo supone que en cada instante se corrige una
-fracción fija $k$ de los equipos que siguen vulnerables, así que la cantidad disminuye tanto más
-rápido cuanto más equipos quedan por corregir. Las unidades de $k$ son el inverso de las del
+donde $k > 0$ es la rapidez de remediación. El modelo supone que los equipos que siguen
+vulnerables se corrigen a una tasa $k$ por unidad de tiempo, proporcional a los que quedan, así
+que la cantidad disminuye tanto más rápido cuanto más equipos quedan por corregir. Las unidades de $k$ son el inverso de las del
 tiempo, y su recíproco $1/k$ es un tiempo característico del proceso. La solución de referencia
 del problema es
 V(t) = V_0\, e^{-kt} ,
@@ -80,8 +80,7 @@ Cada término es el anterior multiplicado por la constante $r = 1 - hk$: la suce
 geométrica de razón $r$. Aplicando \eqref{eq:modelo-discreto} de forma repetida,
 $V_1 = r V_0$, $V_2 = r V_1 = r^2 V_0$, y en general
 V_n = V_0\, (1 - hk)^{n}, \qquad n = 0, 1, 2, \ldots
-Esta es la única deducción analítica del trabajo, y recae sobre una sucesión, no sobre una
-ecuación diferencial. La solución de referencia evaluada en los mismos instantes también es
+Esta deducción recae sobre una sucesión, no sobre una ecuación diferencial. La solución de referencia evaluada en los mismos instantes también es
 geométrica, porque $t_n = nh$ da
 V(t_n) = V_0\, e^{-khn} = V_0\, \bigl(e^{-hk}\bigr)^{n} ,
 con razón $e^{-hk}$ en lugar de $1 - hk$. Como $1 - hk$ es el polinomio de Taylor de primer
