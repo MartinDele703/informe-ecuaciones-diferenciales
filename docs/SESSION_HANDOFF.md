@@ -1,69 +1,79 @@
 # SESSION_HANDOFF
 
-Fecha: 2026-11-01, sesión 1. Leer también `CLAUDE.md`, `CONTEXT.md`, `docs/REQUISITOS.md`,
-`docs/RUBRICA_EVALUACION.md` y `docs/adr/0001`.
+Fecha: 2026-11-01, sesión 2. Leer también `CLAUDE.md`, `CONTEXT.md`, `docs/REQUISITOS.md`,
+`docs/RUBRICA_EVALUACION.md`, `docs/ENTREGA.md` y `docs/adr/0001`.
 
 ## 1. Objetivo del proyecto
 
 Informe académico "Simulación numérica de sistemas dinámicos aplicada a ciberseguridad" para
 Cálculo Aplicado (UCU, 2026-2), en LaTeX, más el código Python que genera sus figuras y tablas.
 Meta: nota máxima según la rúbrica. Es el segundo trabajo del curso; el proceso completo se
-hereda de `../informe-sumatorias` (terminado y revisado).
+hereda de `../informe-sumatorias`.
 
-## 2. Estado: scaffolding listo, contenido sin empezar
+## 2. Estado: borrador completo del informe, listo para revisión humana
 
 Lo que hay:
-- Todo el proceso copiado y adaptado desde `informe-sumatorias`: hooks del flujo de redacción,
-  skills locales (`academic-humanizer`, `humanamente`, `humanizer`, `session-handoff`),
-  comandos (`/humanizar`, `/grill-with-docs`), `.claude/settings.json`, `.gitignore`.
-- La consigna leída completa y destilada en `docs/REQUISITOS.md` (ítem por ítem, preguntas
-  sueltas incluidas) y en el glosario `CONTEXT.md`.
-- `docs/RUBRICA_EVALUACION.md` y `tools/verificar_informe.py` adaptados: la dimensión CÓDIGO
-  ahora chequea las firmas exactas `euler(f, x0, t0, tf, h)` y `euler_mejorado(...)` (C1), los
-  módulos esperados (C2), docstrings (C3), que no se use scipy ni integradores (C4) y la corrida
-  (C5). Se agregó F11 parcial: ningún `[PENDIENTE]` fuera de comentarios.
-- `src/metodos.py` implementado: `euler`, `euler_mejorado`, `error_absoluto`,
-  `cantidad_de_pasos`. Los tres módulos de experimento son stubs con `correr()` que solo
-  imprimen "pendiente"; su docstring dice exactamente qué figuras y tablas tienen que producir y
-  con qué nombre.
-- `informe/main.tex` con la portada (título provisorio) y las ocho secciones como esqueleto
-  con comentarios que dicen qué va en cada una y un `[PENDIENTE]`.
+- **Código terminado.** `src/metodos.py` (Euler, Euler mejorado, error absoluto) y los tres
+  experimentos implementados. `python src/main.py` corre completo, imprime 34 líneas y genera
+  7 figuras (`informe/figuras/exp1-lineal`, `exp1-exponencial`, `exp2-error-vs-t`, `exp2-orden`,
+  `exp3-organizaciones`, `exp3-estabilidad`, `exp3-lambda`) y 4 tablas (`exp2-error-por-h`,
+  `exp2-metodos`, `exp3-valores`, `exp3-equilibrio`). Las figuras son reproducibles byte a byte
+  (se vacían los metadatos de fecha del PDF en `comun.guardar_figura`): dos corridas seguidas
+  dejan `git status` limpio.
+- **Informe completo.** Las ocho secciones escritas (Resumen 295 palabras, Introducción con seis
+  objetivos específicos, Marco teórico de unas 4,5 páginas con la investigación de
+  ciberseguridad, Metodología, Resultados por fenómeno, Discusión con todas las preguntas de la
+  consigna respondidas, Conclusiones que responden los seis objetivos con ordinales,
+  Bibliografía con 11 entradas APA verificadas). 25 páginas, compila con Tectonic sin
+  `Overfull`/`Underfull` ni referencias rotas.
+- **Flujo de redacción corrido** (academic-humanizer → humanamente → humanizer) sobre las ocho
+  secciones; marcas en `.claude/hooks/humanizado/`.
+- `python tools/verificar_informe.py --todo`: un solo hallazgo, F3, la fecha de la portada.
 
-Lo que NO hay: ni una línea de prosa del informe, ni figuras, ni tablas, ni bibliografía (solo
-candidatas comentadas en `07-bibliografia.tex`). No hay repo remoto todavía.
+Lo que NO hay: fecha de entrega en la portada (`[FECHA PENDIENTE]` en `informe/main.tex`),
+revisión de los autores, y el repo sigue privado.
 
 ## 3. Decisiones de esta sesión
 
-- Repo aparte en vez de seguir en `informe-sumatorias` (ver `docs/adr/0001`): ese repo se
-  transfirió a Manuel y el link de Metodología tiene que apuntar a un repo con un solo trabajo.
-- Módulos de código: `metodos.py` + tres experimentos (verificación; error y métodos;
-  vulnerabilidades). Nombres de figuras y tablas previstos en los docstrings de cada módulo.
-- Tiempos como `t0 + n*h`, pasos como `round((tf - t0)/h)`.
-- El estudio de `hk > 1` se hace numéricamente con `h` elegidos por nosotros.
-- Se asume el mismo grupo de autores que el trabajo anterior (Martín, Manuel, Joaquín). Si el
-  grupo cambió, corregir `CLAUDE.md`, `README.md`, `informe/main.tex` y `docs/adr/0001`.
+- Estudio de $hk > 1$: $k = 0{,}7$, $V_0 = 1000$, $h \in \{1, 2, 3\}$, $0 \le t \le 30$
+  ($hk \in \{0{,}7;\ 1{,}4;\ 2{,}1\}$). Modelo con $\lambda$: $h = 0{,}1$, $0 \le t \le 20$,
+  comparado contra $\lambda/k$. Ambas en `CLAUDE.md`.
+- La figura de orden (`exp2-orden`) grafica el **error máximo** y no el final: con $h = 1$ Euler
+  da exactamente 0 y su error final coincide con $e^{-10}$, chico por casualidad, lo que aplana
+  la curva. La Discusión explica ese artefacto. Las tablas siguen con error final, como pide la
+  consigna.
+- Se trabajó con cinco carriles paralelos en worktrees (tres de código, dos de prosa) y después
+  secuencialmente en el contexto principal. El patrón quedó documentado en `CLAUDE.md`.
+- Fuentes de ciberseguridad citadas: NIST SP 800-40 Rev. 4 (Souppaya y Scarfone, 2022), glosario
+  CSRC de NIST, MITRE ATT&CK T1190 (v2.8, 2026), FIRST CVSS v4.0 (rev. 1.2, 2024), CISA KEV, y la
+  FAQ archivada del programa CVE (MITRE, 2021; la única con reserva: cve.org no se pudo leer sin
+  JavaScript, se puede reemplazar por el Overview actual abriéndolo en el navegador).
+- Trampas nuevas registradas en `CLAUDE.md`: `\%` dentro de modo matemático y `\max` dentro de
+  `\caption` rompen con babel en español; comentarios con `\begin{enumerate}`/`\item` confunden el
+  chequeo N2 del verificador.
 
 ## 4. Verificaciones corridas
 
-- `python src/main.py`: corre y imprime tres líneas de "pendiente".
-- `tectonic informe/main.tex`: compila el esqueleto.
-- `python tools/verificar_informe.py`: reporta los `[PENDIENTE]`, el resumen vacío y la
-  bibliografía sin entradas, como corresponde a un esqueleto.
+- `python src/main.py` completo, sin errores; chequeos a mano de cada experimento (Euler con
+  $h = 1$ sobre $x' = -x$ da 0, Euler mejorado 0,5; $V_1 = 300$ y $V_2 = 90$ para la
+  organización C con $h = 1$; $hk = 1{,}4$ da $-400, 160$; $\lambda = 200$ termina a 0,75 de
+  $666{,}67$).
+- `tectonic --keep-logs`: 0 cajas desbordadas, 0 referencias indefinidas, 25 páginas.
+- `python tools/verificar_informe.py --todo`: solo F3.
+- Revisión visual de portada, índice, páginas de Resultados y bibliografía.
 
 ## 5. Próximos pasos recomendados, en orden
 
-1. Crear el repo remoto privado (`gh auth switch --user MartinDele703` y
-   `gh repo create MartinDele703/informe-ecuaciones-diferenciales --private --source . --push`)
-   e invitar a los demás autores.
-2. Implementar los tres experimentos en `src/` siguiendo los docstrings y
-   `docs/REQUISITOS.md` §1. Hacer el 1 primero (es el más corto) y verificar a mano con
-   `h = 1` sobre `x' = -x` que Euler da 0 en un paso y Euler mejorado da 0.5.
-3. Escribir el informe en este orden: Marco teórico, Metodología, Resultados (con las figuras
-   ya hechas), Discusión, Conclusiones, Introducción, Resumen. Una sección por vez; al terminar
-   cada una, el hook pide el flujo de redacción en subagente.
-4. Investigación de ciberseguridad: buscar y verificar las fuentes (NIST SP 800-40, MITRE ATT&CK
-   T1190, FIRST CVSS) antes de citarlas.
-5. Revisión final con `docs/RUBRICA_EVALUACION.md` y `tools/verificar_informe.py --todo`.
+1. **Lectura completa del PDF por los tres autores** (`tectonic informe/main.tex`), con
+   `docs/RUBRICA_EVALUACION.md` al lado. Especial atención a: el título provisorio de la portada,
+   la longitud del Marco teórico (4,5 páginas; si hay que acortar, los candidatos son el párrafo
+   del desvío $D_n$ y la comparación de razones $1 - hk < e^{-hk}$), y que la Discusión responda
+   cada pregunta de `docs/REQUISITOS.md` §1 con el tono esperado.
+2. Poner la fecha de entrega en `informe/main.tex` y revisar los nombres de los docentes.
+3. Si se cambia prosa de una sección, el hook avisa; revisar a mano las frases nuevas contra las
+   reglas de redacción y volver a marcar con `marcar_humanizado.py` (sin correr los skills de
+   nuevo salvo cambios grandes).
+4. `docs/ENTREGA.md` antes de entregar; después, hacer público el repo (`docs/adr/0001`).
 
 ## 6. Preferencias y restricciones
 

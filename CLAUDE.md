@@ -105,6 +105,14 @@ Para llegar a 1.0 hacen falta dos dimensiones en Excelente, es decir, sin errore
 - Antes de commitear, `python src/main.py` tiene que correr sin errores.
 - Commits en español, imperativo, cortos.
 - `/grill-with-docs` para discutir un cambio de enfoque antes de implementarlo.
+- **Carriles paralelos.** Cuando hay trabajo independiente (un módulo de experimento por carril,
+  una sección de prosa por carril), se lanza un subagente por carril con `isolation: "worktree"`
+  del tool Agent, cada uno con un brief autocontenido que fija los archivos que puede tocar, los
+  parámetros ya decididos y los chequeos a mano que tiene que reportar. Nadie toca `comun.py`,
+  `main.py` ni `metodos.py` desde un carril. El contexto principal verifica cada rama contra esos
+  chequeos, mergea a `main` y recién después corre el flujo de redacción sobre la prosa. Lo que es
+  secuencial (Resultados, Discusión, Conclusiones, Introducción, Resumen) se escribe en el
+  contexto principal con una sola voz.
 - **Flujo de redacción: obligatorio, una vez por sección, en un subagente.** Cuando una sección
   del informe (`informe/secciones/*.tex`) queda terminada con prosa nueva, y antes de darla por
   lista, se la pasa por los tres skills locales `academic-humanizer` → `humanamente` →
@@ -167,6 +175,13 @@ python tools/verificar_informe.py --todo   # agrega la corrida completa de src/m
   sus cifras **no van en la prosa**, que describe la tendencia. En el trabajo anterior el
   verificador tenía un chequeo específico para eso (N1b); si acá se agrega una tabla así, hay que
   volver a agregarlo.
+- **Babel en español rompe dos cosas.** Un porcentaje dentro de modo matemático (`$12\,\%$`) da
+  `Incompatible glue units`: el signo va afuera, `$12$\,\%`. Y `\max`, `\min`, `\lim` dentro de un
+  `\caption` dan `Argument of \es@a has an extra }` porque babel los redefine con tilde: usar
+  `\protect\max`.
+- El verificador cuenta los `\item` entre el primer `\begin{enumerate}` y el primer
+  `\end{enumerate}` de la Introducción, comentarios incluidos: no escribir esos comandos en los
+  comentarios de `01-introduccion.tex`.
 - Tectonic no escribe el log por omisión. Para ver `Overfull`/`Underfull`:
   `tectonic --keep-logs --keep-intermediates -o <dir> informe/main.tex` y grep sobre `<dir>/main.log`.
 - En Windows, el tool Read puede no abrir PDFs: extraer el texto con `pymupdf` o renderizar la
