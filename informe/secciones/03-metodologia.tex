@@ -73,8 +73,11 @@ El segundo experimento mide el error sobre $x' = -x$, $x(0) = 1$, $0 \le t \le 1
 corre Euler con $h \in \{1,\, 0.5,\, 0.1,\, 0.05,\, 0.01\}$ y se registran el error absoluto
 $E_n$ en cada instante, el error final, el error máximo y el número de pasos de cada corrida.
 Después se corren Euler y Euler mejorado con $h \in \{1,\, 0.5,\, 0.1\}$ y se comparan el valor
-final, el error final y el número de pasos de cada método. Con los errores finales de los dos
-métodos se construye una figura de error final contra $h$ que permite leer el orden de cada uno.
+final, el error final y el número de pasos de cada método. Con los errores máximos de los dos
+métodos, para los cinco valores de $h$, se construye una figura de error máximo contra $h$ que
+permite leer el orden de cada uno. Se usa el error máximo y no el final porque este último
+depende de en qué punto del intervalo termina la corrida: con $h = 1$ Euler llega a cero en un
+paso y su error final coincide con la referencia en $t = 10$, que es pequeña por sí misma.
 
 El tercer experimento aplica Euler al modelo de remediación $V' = -kV$, $V(0) = V_0$, con
 referencia $V(t) = V_0 e^{-kt}$, en tres partes. La primera simula las organizaciones A, B y C
@@ -122,11 +125,11 @@ ver varias oscilaciones antes del final.
 
 Para el modelo con $\lambda$ se usó $h = 0.1$ sobre $0 \le t \le 20$, el mismo intervalo que el
 de las organizaciones. Es el paso más fino de los que se usan en el estudio de las organizaciones
-y el que menor error final muestra en el experimento de error contra tamaño del paso, con lo cual
+y el que menor error máximo muestra en el experimento de error contra tamaño del paso, con lo cual
 las diferencias entre los cuatro valores de $\lambda$ reflejan el modelo y no el método.
 
 La figura de error absoluto contra $t$ usa escala logarítmica en el eje vertical, y la de error
-final contra $h$ usa escala logarítmica en los dos ejes. Los errores abarcan varios órdenes de
+máximo contra $h$ usa escala logarítmica en los dos ejes. Los errores abarcan varios órdenes de
 magnitud entre $h = 1$ y $h = 0.01$, y en escala lineal las curvas de los pasos chicos quedarían
 pegadas al cero. En la figura log-log un error proporcional a $h^{p}$ se ve como una recta de
 pendiente $p$, así que el orden de cada método se lee directamente de la figura. Las figuras del
