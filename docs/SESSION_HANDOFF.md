@@ -52,6 +52,38 @@ revisión de los autores, y el repo sigue privado.
   `\caption` rompen con babel en español; comentarios con `\begin{enumerate}`/`\item` confunden el
   chequeo N2 del verificador.
 
+## 3b. Archivos tocados en esta sesión
+
+- `src/experimento1_verificacion.py`, `src/experimento2_error_metodos.py`,
+  `src/experimento3_vulnerabilidades.py`: implementados desde el stub.
+- `src/comun.py`: `guardar_figura` vacía los metadatos de fecha del PDF.
+- `informe/figuras/*.pdf` y `informe/tablas/*.tex`: generados.
+- `informe/secciones/00` a `07`: todas escritas (el `07` con las 11 entradas APA).
+- `CLAUDE.md`: decisiones de $hk$ y $\lambda$, patrón de carriles, trampas nuevas.
+- `.gitignore`: ignora `.claude/worktrees/`.
+- `.claude/hooks/humanizado/*.txt`: marcas del flujo de redacción, una por sección.
+- Sin cambios: `src/metodos.py`, `src/main.py`, `tools/verificar_informe.py`, `docs/REQUISITOS.md`,
+  `CONTEXT.md`, `informe/main.tex` (salvo que sigue con `[FECHA PENDIENTE]`).
+
+## 3c. Errores encontrados y corregidos (ninguno abierto)
+
+- Compilación: `$12\,\%$` en modo matemático (`Incompatible glue units`) y `$\max_n$` dentro de
+  un `\caption` (`Argument of \es@a has an extra }`), los dos por babel en español. Corregidos y
+  registrados en `CLAUDE.md`.
+- Verificador N2 contaba 7 objetivos por un `\item` en un comentario de `01-introduccion.tex`.
+- Cada corrida de `main.py` cambiaba los bytes de todas las figuras (fecha en el PDF): resuelto en
+  `comun.guardar_figura`.
+- Un subagente corrigió en Metodología la afirmación "10/0.1 no da exactamente 100", que era
+  falsa en Python; ahora dice que no está garantizado y por qué. Verificado.
+
+## 3d. Supuestos
+
+- Mismo grupo de autores y mismos docentes que en `informe/main.tex`; si cambió, corregir ahí,
+  en `CLAUDE.md`, `README.md` y `docs/adr/0001`.
+- Versiones de herramientas tomadas de esta máquina (Python 3.12.3, NumPy 1.26.4,
+  Matplotlib 3.11.1) y escritas en Metodología; si otro compañero compila con otras, no hace
+  falta cambiarlas, pero conviene que coincidan con las de quien corra `main.py` por última vez.
+
 ## 4. Verificaciones corridas
 
 - `python src/main.py` completo, sin errores; chequeos a mano de cada experimento (Euler con
