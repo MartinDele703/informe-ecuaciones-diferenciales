@@ -18,11 +18,20 @@ def cantidad_de_pasos(t0: float, tf: float, h: float) -> int:
     """Cuántos pasos de tamaño h hacen falta para ir de t0 a tf.
 
     Se redondea en vez de truncar porque (tf - t0) / h no suele ser entero en punto
-    flotante aunque lo sea en papel (10 / 0.1 da 99.99999999999999).
+    flotante aunque lo sea en papel (10 / 0.1 da 99.99999999999999). Si el cociente
+    no es entero más allá de ese error de representación (tolerancia relativa 1e-9),
+    se lanza ValueError en vez de redondear en silencio: un último paso más corto o
+    un intervalo recortado romperían la comparación con la referencia y el análisis
+    de orden. Todos los h del informe dividen exactamente sus intervalos.
     """
     if h <= 0:
         raise ValueError("el tamaño del paso h tiene que ser positivo")
-    return round((tf - t0) / h)
+    cociente = (tf - t0) / h
+    pasos = round(cociente)
+    if abs(cociente - pasos) > 1e-9 * max(1.0, abs(cociente)):
+        raise ValueError(f"(tf - t0) / h = {cociente!r} no es entero: el paso h = {h!r} "
+                         f"tiene que dividir exactamente el intervalo [{t0!r}, {tf!r}]")
+    return pasos
 
 
 def euler(f: Funcion, x0: float, t0: float, tf: float, h: float):

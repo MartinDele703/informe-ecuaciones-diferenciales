@@ -37,7 +37,10 @@ de referencia evaluada en los mismos instantes.
 Dos detalles de implementación afectan la comparación con la referencia. El número de pasos es
 $N = \mathrm{round}((t_f - t_0)/h)$, redondeado y no truncado, porque en punto flotante un
 cociente como $10/0.1$ no tiene garantizado dar exactamente $100$: $0.1$ no se representa de
-forma exacta en binario y truncar podría perder el último paso. Los tiempos se calculan como
+forma exacta en binario y truncar podría perder el último paso. Si el cociente se aparta de un
+entero en más que ese error de representación, la función se detiene con un error en lugar de
+redondear en silencio: todos los pasos usados en este informe dividen sus intervalos en un
+número entero de pasos. Los tiempos se calculan como
 $t_n = t_0 + n h$ en lugar de acumular $t \leftarrow t + h$: sumar $h$ cientos de veces arrastra
 un error de redondeo en $t$, y la referencia $x(t_n)$ se evaluaría en un instante que no es el
 del paso.

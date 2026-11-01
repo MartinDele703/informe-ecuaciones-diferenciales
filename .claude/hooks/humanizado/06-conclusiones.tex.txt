@@ -31,8 +31,9 @@ con un paso dado crece con $k$, lo que muestra que el paso adecuado se mide en r
 rapidez del fenómeno.
 Sobre el cuarto, la deducción analítica y la simulación coinciden. La sucesión
 $V_n = V_0 (1 - hk)^n$ conserva el signo y la monotonía de la referencia solo si $0 < hk < 1$;
-con $1 < hk < 2$ converge a cero pero oscila entre valores negativos y positivos, y con
-$hk \ge 2$ diverge. Las corridas con $hk = 1.4$ y $hk = 2.1$ mostraron esos dos comportamientos. Una
+con $1 < hk < 2$ converge a cero pero oscila entre valores negativos y positivos, con $hk = 2$
+alterna entre $V_0$ y $-V_0$ sin converger, y con $hk > 2$ diverge. Las corridas con $hk = 1.4$
+y $hk = 2.1$ mostraron la oscilación amortiguada y la divergencia. Una
 cantidad negativa de equipos vulnerables no tiene sentido, y su aparición es un síntoma de que
 el paso es demasiado grande para la rapidez del proceso, no una propiedad del fenómeno.
 Sobre el quinto, con aparición de vulnerabilidades nuevas la cantidad de equipos vulnerables no
@@ -61,5 +62,5 @@ acumulado domina al error de truncamiento. Del lado del modelo, separar los equi
 severidad con un $k$ propio para cada una, incorporar una tasa de aparición con saltos que
 represente los ciclos de publicación de parches, limitar la remediación a una capacidad finita
 y agregar un término de explotación que convierta equipos vulnerables en equipos comprometidos.
-Ninguna de esas variantes tiene solución de referencia. En ellas, la simulación numérica ya no
-verifica una fórmula conocida: es el modo de obtener la solución.
+Varias de esas variantes no tienen solución de referencia conocida. En ellas, la simulación
+numérica ya no verifica una fórmula conocida: es el modo de obtener la solución.

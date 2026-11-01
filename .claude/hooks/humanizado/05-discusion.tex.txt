@@ -113,7 +113,9 @@ del método: con un paso mayor que $1/k$, la recta tangente del primer paso atra
 antes de que termine el intervalo, y el método sigue la recta en lugar de la curva. Por eso el
 criterio para que el modelo discreto tenga sentido es más exigente que la estabilidad: hace
 falta $0 < hk < 1$, es decir $h < 1/k$, para que la sucesión conserve el signo y la monotonía de
-la referencia. Para la organización C eso significa $h < 1.43$ días. Las simulaciones de la
+la referencia. Con $hk = 1$ la sucesión tampoco toma valores negativos, pero cae a cero en un
+solo paso y deja de parecerse a la exponencial. Para la organización C la condición significa
+$h < 1.43$ días. Las simulaciones de la
 sección \ref{subsec:res-organizaciones} cumplen esa condición en todos los casos, con $hk$ como
 máximo $0.7$, y por eso ninguna de sus curvas oscila. La convergencia con $hk = 1.4$, aunque
 pase por valores negativos, también tiene una lectura práctica: un programa que no grafique la
@@ -219,7 +221,8 @@ mismo para los dos métodos a igual $h$, y el de evaluaciones de $f$ es el doble
 mejorado. El efecto del tamaño del paso es doble: sobre la precisión, a través del orden, y
 sobre la estabilidad, a través del producto $hk$. Este segundo efecto es el que decide si la
 simulación tiene sentido: con $hk < 1$ la sucesión imita a la referencia, con $1 < hk < 2$
-converge pero oscila entre valores sin significado físico, y con $hk \ge 2$ diverge. El
+converge pero oscila entre valores sin significado físico, con $hk = 2$ alterna entre $V_0$ y
+$-V_0$ sin converger, y con $hk > 2$ diverge. El
 parámetro adimensional $hk$, y no $h$ solo, es la cantidad que hay que controlar al elegir el
 paso.
 La interpretación informática de los resultados es la que une las dos partes del trabajo. El
